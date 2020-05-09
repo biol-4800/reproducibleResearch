@@ -1,0 +1,91 @@
+---
+title: "Writing non-garbage code"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+
+
+## Style guide
+
+Writing pretty code
+
+
+
+
+
+
+
+
+
+
+
+## Vectorization
+
+Writing efficient code
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Line profiling
+
+Where is my code shit?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Unit testing
+
+How do I make sure my code is outputting the right shit?
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- 
+
+
+
+stuff?
+
+
+
+
+
+
+
+
+
+
+
+
+
+

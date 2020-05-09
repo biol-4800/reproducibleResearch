@@ -1,0 +1,21 @@
+---
+title: "Handling spatial data in R"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+
+
+
+
+## 
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,308 @@
+---
+title: "Version control and the command line"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+
+
+## Unix (bash) shell
+
+The best way to directly interact with your computer is through the terminal window. This terminal (in Mac and Linux OSs) is the unix shell, and is commonly referred to as the bash shell, though bash is only one flavor of unix shell (e.g., Ksh shell, fish). 
+
+We will use the bash shell to run some of our programs, and help with makefiles and travis-CI builds, which we will go over at some point. On a basic level, the ability to us the bash shell is incredibly useful for copying/moving/deleting files (especially in bulk) and the automation of repetitive tasks. 
+
+
+
+
+### Tutorial 
+
+Open up the terminal. 
+
+You should see, at least in Ubuntu, your username followed by a "@" and the name of your machine (e.g., `tad@poe`), followed by ":~$" and a blinking cursor. You are in the home directory by default. To see this, issue the command 
+
+```
+pwd
+``` 
+
+which should output "/home/name", where "name" is your username (again, this may be specific to Linux OSs). 
+
+To change the directory that you are in, you use the `cd` command. 
+
+```
+cd Documents
+```
+
+should navigate you to the Documents folder (assuming that it exists). To test if it exists, we can examine all the items in the current directory by using the `ls` command. 
+
+```
+ls -l
+```
+
+Here, we issued the `ls` command with the `-l` argument. Adding arguments to functions allows for customizable output. Here, we ask ls to output additional information on modification date, permissions, file size, etc. To see the other possible arguments we could have given the function, we can use 
+
+```
+ls --help
+man ls
+```
+
+The `--help` argument should work with any shell based command. 
+
+
+Directories are structured hierarchically, so `home/tad/Documents` means that the `Documents` folder is nested within the `tad` folder which is nested within `home`. To back up levels, we can use relative paths. For instance, if we wish to back up one level, 
+
+```
+cd '..'
+```
+
+or two levels
+
+```
+cd '../..'
+```
+
+
+By default, if you issue `cd` without any arguments, you will be returned to your home directory. 
+
+
+#### Wildcards
+
+Another useful tool is the use of wildcards, which allow you to target certain files without knowing their exact name. For instance, if you want to list all files in the working directory that have a certain extension (e.g., '.txt'), you could issue the command
+
+```
+ls *.txt
+```
+
+Here, the star means "anything" and the .txt constrains the ls to just .txt files. 
+
+
+
+
+
+
+
+
+A few other important functions are given below. The best way to learn about them is to read the --help file, and to play around with using them. I list the commands below, and then we can take some time to practice interacting with our machines through bash shell. 
+
++ cp: copy a file from one location to another
++ mv: move a file from one location to another
++ rm: remove a file (permanent) 
++ mkdir: create a new folder
++ cat: display content of a file
++ head: display first 10 lines of a file
++ tail: display last 10 lines of a file
++ wc: count lines, words, and characters in a file
++ nano: command-line text editor that ships with Ubuntu
++ top: show the usage stats
+ 
+
+
+
+
+## Downloading programs that you need
+
+This section will focus on how to install things (and permissions, generally) on Ubuntu. If we want to install a program called htop, we could issue:
+
+```
+apt-get install htop
+```
+
+However, this should error out and saying something like "Permission denied" and ask "are you root?". You are not. Being "root" means you have permissions to install and modify all files. We will not go into permissions in much detail here. However, to get root access, you have to pre-empt the command by "sudo", and you will be prompted for your password.
+
+
+```
+sudo apt-get install htop
+sudo apt install htop
+```
+
+You also do not strictly need the "-get" part of that. This is a holdover from an earlier version, and I just stuck with it due to muscle memory. 
+
+
+
+
+
+
+### piping
+
+We may want to multiple tasks that build on one another (e.g., sort the output of ls). To do this, a useful method is to use the unix pipe. The pipe basically takes the output of the first thing and hands it to the next thing, separated by a "|" character. For instance, if we want to list the contents of the working directory, and then sort them, we could issue
+
+```
+ls | sort
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+# git
+
+Now we will demonstrate how to use command line utilities. These are things that do not have a GUI (graphical user interface), and therefore must be run through the command line (e.g., nano). The thing we will learn to use through command line is a version control software called `git`. 
+
+
+
+
+
+### What is version control?
+
+Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later.
+
+
+### Why does it matter?
+
+Version control is important both for collaborative coding with team members, and for developing your own code locally. Using version control software as an individual is important to have a constant backup of previously developed files, charting a clear timeline of progress on a particular project.  Using version control software as a team helps keep every team member working off the latest version, or allows team members to develop add-ons without breaking the main flow of the code. 
+
+
+
+
+
+
+
+
+### How do I do it?
+
+I want you to make a directory called gitTest, and put something in it (e.g., create a file, move a file, etc. using what you have learned from the bash shell tutorial above). Then, I want you to change into the gitTest directory and list its contents.
+
+Now, initiate the folder as a git repository (i.e., repo).
+
+```
+git init
+```
+This creates a `.git` folder which houses information on each version of the repo. A quick aside that we will have to do is
+
+```
+git remote add origin '/path/to/your/folder'
+```
+This part will become unnecessary when we interface with Github (discussed below), and is only needed when you are setting up a version controlled project that will only ever exist on your local machine. There are still numerous benefits to version controlling your work on your own machine, but the power of git goes well beyond this. 
+
+
+
+
+
+
+To properly version control, you have to take periodic "snapshots" of the contents of the repo, tracking changes in files across time. To take a "snapshot", we have to do a "commit". This is `git` jargon, and I will go over it below, introducing all the terms at once to hopefully provide a glossary and clear programmatic flow.
+
+
+
+
+```
+git add 
+git commit -m 'message'
+git push origin master
+```
+
+So all git commands start by using the prefix "git", as above, into the bash shell. The order of events is as such. First, we `add` files to the `commit`, telling git which files we want to include in the commit. Files that we do not include are not removed, but they just are not versioned in that commit. 
+
+Next, we make a `commit`, and supply some informative message about what was changed using the `-m` argument to the `commit` function. 
+
+After this, we simply push the changes, which takes all the changes that were staged during the process of adding the files and then committing the files, and creates a clear record. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## The use of git with Github
+
+Github is an online hosting platform for your git repositories. That is, you can maintain a versioned history of your files independent of the internet and any potential collaborators, but by hosting on a platform like Github, you can collaboratively develop files with other people, and everything remains nicely versioned. This is important, as this will be how you turn in assignments. I expect that you will leave this class with a solid working knowledge of git and Github. 
+
+
+### Setting up a Github account
+
+Go to https://github.com/ and set up your account if you have not already done so. 
+
+
+
+### Making your local git repo talk to Github
+
+Recall when we added a `remote` to the local git repo? To refresh your memory, we issued this command
+
+```
+git remote add origin '/path/to/your/folder'
+```
+
+which was just a workaround that we probably did not even strictly need. The reason why we did not need it is because `remotes`, by definition, are for remote projects. That is, we use `remotes` to manage projects that will be hosted on internet services (like Github!). So now we will change the remote of this project to point to Github. To do this, we first have to set up the remote repo on Github. 
+
+To do this, we will navigate to our account on Github, and click the `+` dropdown menu in the top right corner, selecting "New repository". We fill out the relevant information, and create it. Then, we can go back to our local repo, and set the remote to point to Github.
+
+```
+git remote add origin https://github.com/userName/repoName.git
+```
+
+
+Now, when we go through the `add, commit, push` process of staging and making a commit (as described above), you will be prompted for your Github username and password. 
+
+_you may also need to set some global options of your name and email address when first pushing to Github, but you will be instructed on how exactly to do this_
+
+
+
+
+### Benefits of Github
+
+Github allows for collaborative coding, meaning that people distributed across the world can work on different aspects of incredibly complicated things, including entire languages (e.g., Rust, Julia, etc.), machine learning frameworks (e.g., Tensorflow), and a large collection of operating systems (e.g., https://github.com/jubalh/awesome-os). 
+
+**What does this mean for you?**
+
+Probably nothing, but it means something for how you will collaborate with your classmates, and how you will turn in assignments. All your dev work for your assignments will be version controlled on Github. 
+
+
+
+
+
+
+## So let's take a tour of Github
+
+_this will be done in class_
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

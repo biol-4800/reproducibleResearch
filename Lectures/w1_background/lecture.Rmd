@@ -1,0 +1,328 @@
+---
+title: "Welcome to Reproducible Research in R"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+
+
+
+## Structure of the class
+
+Syllabus, my expectations, your expectations, 
+
+
+
+## What is reproducible research?
+
+
+reproducibility is obtaining consistent results using the same input data; computational steps, methods, and code; and conditions of analysis. This definition is synonymous with “computational reproducibility,” and the terms are used interchangeably in this report.
+
+Replicability is obtaining consistent results across studies aimed at answering the same scientific question, each of which has obtained its own data.
+
+
+
+
+
+
+
+
+
+
+
+### What does reproducible research have to do with medicine?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### What are some bad things that can happen when we fail to focus on reproducibility?
+
+Vaccines cause autism (study de-bunked, but would not have even gotten that far if people could examine the code and such).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Linux operating system
+
+You do not have to use a Linux operating system in order to do reproducible research. Ideally, the point of reproducible research is such that the analyses will run on any operating system. However, often the tools that researchers use vary by operating system, and this is a huge roadblock to doing reproducible research. 
+
+
+To get everyone on the same page, and to promote the use of open source software, I encourage you to use a Linux operating system called Ubuntu. I have flash drives that I can pass along that are persistent Ubuntu operating systems. If you opt to not use Ubuntu, you will have to be able to download and implement the following in your native OS (e.g., Windows, Mac OS, etc.):
+
++ bash shell
++ make
++ git
++ R
+
+
+#### Windows
+Windows 10 should be able to run a Linux subsystem, which is necessary for getting at least one or two of the above working. 
+
+https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/
+
+
+
+#### Mac OS 
+Mac OS is basically a Linux ripoff, so it has the bash shell and everything needed. However, if you are not using Linux, I will not be able to help troubleshoot, and you will be on your own there. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## The tools you will learn
+
+The software listed above (i.e., bash shell, make, git, and R) can be used in concert to create reproducible workflows for analyses. 
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+## What is markdown? 
+
+> Markdown is a lightweight markup language that you can use to add formatting elements to plaintext text documents. 
+
+
+
+
+
+
+## Why is it useful?
+ 
+Independent of operating system (portable and platform independent)
+
+Markdown is "future-proof" (plain text with some sprinkles, so it can be read by most any text editor)
+
+Can be used to make websites, presentations, email, documentation, and academic papers.
+
+
+
+
+
+
+
+
+
+
+
+### Markdown syntax
+
+Markdown reads like plain-text, but can be compiled into hmtl, pdf, and other useful formats. It has a bunch of benefits over other text formats (e.g., docx) in that it can do syntax formatting quite easily, is incredibly simple, and is independent of operating system. In an application like Microsoft Word, you click buttons to format words and phrases, and the changes are visible immediately. Markdown isn’t like that. When you create a Markdown-formatted file, you add Markdown syntax to the text to indicate which words and phrases should look different.
+
+
+We will first go over the syntax of markdown, then introduce embedding code chunks and making a reproducible document. This last part is probably the biggest benefit of using markdown.
+
+
+
+
+## Headers
+
+Creating headings (like the one above that says "Headers") is quite easy, and is accomplished with nested "#" symbols. Heading level 1 (the largest text heading) is acheived with 1 "#" followed by a space and the heading text.
+
+```
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+
+```
+
+
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
+
+
+
+
+
+## Paragraphs
+
+Paragraphs are started by just typing in text with one hard return after the heading title. For many text editors, this is not even necessary, and much of markdown writing handles blank space really well (try this out for yourself by increasing the number of lines between blocks and text and observing the lack of difference it makes). 
+
+There is no need to format the text yourself in terms of indentation or anything. Markdown will do this for you, and you can control how the document appears using the _yaml_ header. _yaml_ stands for "yet another markup language" and is used to template how the markdown appears. For instance, in this document, the _yaml_ header is 
+
+
+```
+---
+title: "An introduction to R and R markdown"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+```
+
+This provides title and author information, as well as information on how to output the file. The raw markdown will be formatted into one of many different formats, with the two most common being "pdf" or "html". 
+
+
+
+## Emphasis
+
+Bold and italic characters are straightforward in markdown, with italics denoted with a "_" character on either side of the italicized text (e.g., "_word_" becomes _word_). 
+
+Bold text is just as simple, with two "*" characters surrounding whatever bold text you would like (e.g., "**word**" becomes **word**). 
+
+
+
+## Block quotes
+
+Indented and pretty block quotes are easy to add as well, by just using the ">" operator. 
+
+```
+> Everything was beautiful, and nothing hurt. 
+```
+
+becomes 
+
+> Everything was beautiful, and nothing hurt. 
+
+
+
+
+## Lists 
+
+Bulleted or enumerated lists are simple as well. 
+
+```
+1. Break an egg
+2. Make an omelette 
+3. Eat the omelette
+```
+
+becomes
+
+1. Break an egg
+2. Make an omelette 
+3. Eat the omelette
+
+
+Itemized lists without the enumeration (no numbers, so just a bulleted list) are acheived with similar syntax. Here any of the following can be used to delineate an item in a list ("*, -, +"), so 
+
+```
++ Eggs
+* Grits
+- Cheese
+```
+
+becomes
+
++ Eggs
+* Grits
+- Cheese
+
+
+## Hyperlinks
+
+Hyperlinks can be embedded using the syntax 
+
+```
+[link](url)
+```
+
+For instance, if you want to download R [click here](https://www.r-project.org/)
+
+
+
+## Images
+
+Images can be embedded into markdown without the copy-paste approach of things like Microsoft Word, which can butcher images depending on OS (have you ever tried to open a Powerpoint on a different computer and all the formatting and images are messed up?)
+
+To embed an image, the syntax is simply
+
+```
+![caption]{image}
+```
+
+an example
+
+![cat](cat.jpeg)
+
+
+
+
+## Code
+
+Now we can get into why markdown is really useful, and how we will use it in this course. Markdown allows for the embedding of code chunks, and will highlight their syntax.
+
+```
+y <- 1
+y
+```
+
+This is nice for tutorials or when we need to clearly show code. But what if we also want the code to be executable (i.e., to run and produce output)? This is where R markdown comes in. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

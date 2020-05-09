@@ -1,0 +1,285 @@
+---
+title: "How to structure analytical pipelines"
+author: Tad Dallas
+output: pdf_document
+---
+
+
+
+## What is an analytical pipeline?
+
+
+
+
+
+
+
+
+
+
+## R specific workflow 
+
+
+
+
+
+### Writing R scripts
+
+```{r}
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Writing functions
+
+
+
+```{r}
+
+
+yourFunction <- function(arguments){
+
+	# doing stuff
+
+
+	# returning stuff
+	return(ret)
+}
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Documenting functions
+
+There are multiple forms of documentation. In this chapter, you’ll learn about object documentation, as accessed by ? or help(). Object documentation is a type of reference documentation. It works like a dictionary: while a dictionary is helpful if you want to know what a word means, it won’t help you find the right word for a new situation. Similarly, object documentation is helpful if you already know the name of the object, but it doesn’t help you find the object you need to solve a given problem. That’s one of the jobs of vignettes, which you’ll learn about in the next chapter.
+
+R provides a standard way of documenting the objects in a package: you write .Rd files in the man/ directory. These files use a custom syntax, loosely based on LaTeX, and are rendered to HTML, plain text and pdf for viewing. Instead of writing these files by hand, we’re going to use roxygen2 which turns specially formatted comments into .Rd files. The goal of roxygen2 is to make documenting your code as easy as possible. It has a number of advantages over writing .Rd files by hand
+
+
+
+
+Run devtools::document() 
+
+
+
+```{r}
+
+#' Title of function
+#'
+#' @param x a number 
+#' @param y a number
+#'
+#' @return
+#'
+#' @examples
+#' @export
+
+addXY <- function(x,y){
+	sum(c(x,y))
+}
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+## Structuring your repository
+
+### README file
+
+A README file is a user-facing file which should detail what your repo is for and how to use it (e.g., reproduce an analysis from data to figures and results). It is normally a .txt or .md extension, meaning it is plain text (.txt) or markdown (.md). README files have been around for well over 50 years, and are essential in designing your workflow. The README should contain the following information:
+
++ **Name and blame**: the name of the project and the names of the contributors (or at least the main author) 
++ **Background/summary**: what is your project for. In the context of science, you would highlight your main research question
++ **Prerequisites**: things necessary for the code to run effectively. Even if you were to write R code that was entirely reproducible, you are assuming that the user has R installed. Information on necessary programs, libraries, etc. should be listed
++ **Installation**: what commands need to be run to reproduce the analyses? This is a description of how to understand the structure of the repo and how to actually reproduce (or install) the analyses.
++ **Contributors**: Credit existing contributors and state any conflict of interests. 
++ **Acknowledgements**: Acknowledge financial support or help from organizations 
++ **Code of conduct**: A clear statement describing acceptable behavior of contributors as they interact. This is important for larger, public-facing products, as it sets up the expectations of community members in terms of standards (e.g., use of inclusive language) and things that are entirely unacceptable (e.g., sexualized language, trolling, political attacks, etc.)
++ **License info**: Describe what license the code is released under. That is, you are the owner of your intellectual property, and that gives you the right to license it in different ways. 
+
+
+
+
+
+
+### LICENSE
+The license file contains the license under which you would like to develop and distribute your science under. In traditional copyright, you maintain all rights to your intellectual property (except that sweet gif you made using footage from the last LSU Tigers football game, as they retain the copyright for the original material). Copyrights are often prohibitively strict in their interpretation, and are almost entirely ignored since the development of the internet. But we still need a way to get credit for our work. _Open source licenses_ allow us to do this in a flexible way. In essence, open source licenses are approved by the Open Source Initiative, and spell out the conditions for the re-use of the product. It is an important distinction, as copyright protects all rights (the default is closed), while open source licenses have things added to them to make them less open (the default is open). 
+
+
+There are a number of open source licenses. For the sake of this course, we will focus only on those in the Creative Commons (https://creativecommons.org/licenses/). The most liberal Creative Commons (CC for short) license is CC0, which waives all rights and places the work in the public domain (anyone can remix, reuse, profit, share, etc. your product). After this, there are variations that modify this open base. The first modification is concerning attribution. 
+
+
+**CC BY**: BY stands for "by attribution", meaning that you can use freely use, distribute, and profit from the product, but you have to acknowledge the source of the product. 
+
+The other licenses are variants on this license, as attribution is a fairly non-restrictive bar. The other restrictions include:
+
++ **SA**: Standing for "share-alike", this modification means that you can build on the existing work, and use it for profit, but you will have to adopt this same license. This is often referred to as a "parasitic" license, since it sort of requires that the person using the licensed product has to license their product in a certain way (i.e., they have to have a CC license). 
+
++ **ND**: Standing for "no derivatives", this modification means that others can freely use the existing work, but cannot modify, transform, or build upon the original product. This is most useful for situations where you want to share your product, but you do not want the content of copies to change across projects. For instance, an internet security company may make a security product, but place this limitation on it so they know that others are building on their existing codebase and not modifying it or degrading it (e.g., for purposes of hacking rather than information security). 
+
++ **NC**: Standing for "non-commericial", this modification means that you cannot use the product for commercial gain. This would especially useful for photographers that produce striking images, which people may want to print and sell. This makes sure that if people print the photos, they cannot profit from it. 
+
+The end product is a basic license (either "CC0" or "CC BY") with some extra letters defining the scope of the license (e.g., "CC BY NC" stands for 'by attribution' and 'non-commercial', so you have to attribute the source of the material and cannot use it for commercial purposes). Now that you know about Creative Commons, you will likely see these everywhere. 
+
+
+
+
+
+
+### .gitignore
+
+The .gitignore file is a plain text file that you contains paths to files you wish to not version-control. For instance, I version control my lectures and exams for "Principles of Ecology", but I develop it in a private repo and have the answer keys to exams in my .gitignore, so that I do not version the answer key (just in case). This is also useful for dealing with large files, as Github can only accept files that are less than 100 Mb. This will not automatically be created when you initialize a git repo, so you will have to use your command line skills to create the file (i.e., `touch .gitignore` to create the file; `nano`, `vim`, `emacs`, `gedit` or the like to edit it). Files beginning with a "." are normally not even shown in file managers, but you can see them by hitting "Ctrl + h". 
+
+
+
+
+
+### Data
+
+Data is typically a folder containing the assorted data used in the analyses. For the sake of this course, there are two types of data. 
+
++ **Raw data**: These files are never changed. Treat them like they are protected files. Scripts that process raw data into the form used in the analyses are placed in the "Analysis" folder. 
+
++ **Processed data**: These files are outputs from the initial pre-processing scripts. These files are what your analyses and plots will use. Treat them like they are wrong and may change. If it is not too time-intensive to re-process your raw data, do it on occasion to ensure that nothing changes in your processed data. 
+
+
+
+
+
+### Analysis
+
+This folder contains your analytical scripts. For the sake of this class, we will assume that these are R or R markdown scripts. This code can output figures directly into this directory, or can create a "figures" directory and output there. However, it is best practice to not have your code create directories (easier to break). 
+
+
+
+
+
+
+
+
+
+### Makefile
+
+The makefile. It is a real pain sometimes. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Continuous integration 
+
+What is the point? Go over a small high-level example (and introduce Travis CI here).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

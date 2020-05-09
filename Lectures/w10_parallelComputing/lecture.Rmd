@@ -1,0 +1,55 @@
+---
+title: "Parallel computing"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+
+
+
+## What is parallel computing?
+
+
+
+
+
+
+
+
+## Why is it useful?
+
+
+
+
+
+
+
+
+
+
+
+
+
+## How do we do it in R?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

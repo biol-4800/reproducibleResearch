@@ -1,0 +1,204 @@
+---
+title: "APIs and visualization"
+author: Tad Dallas
+date: 
+output: pdf_document
+---
+
+
+
+
+
+## What's the point of APIs?
+
+
+
+
+
+
+
+
+
+
+
+
+## How do I query an API?
+
+
+
+
+
+
+
+## R packages for data acquistion
+
+
+
+
+
+
+
+
+
+
+## 
+
+
+
+
+
+
+
+
+
+
+## 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- 
+
+
+
+
+
+
+
+
+
+
+
+
+## R visualizations
+
+
+
+
+The `plot` function
+
+```{r}
+
+plot(1:10)
+
+```
+
+
+
+
+
+
+
+Different forms of plots
+
+```{r}
+
+plot()
+hist()
+barplot()
+image()
+
+```
+
+Other packages exist for plotting like `levelplot` and `ggplot2`. 
+
+
+
+
+
+
+
+
+
+
+
+Setting `par`
+
+```{r}
+
+layout(matrix(1:4, ncol=2))
+hist(runif(1000), 
+	main='', border='dodgerblue', las=1,
+	xlab='Uniform distribution',
+	col=adjustcolor('dodgerblue', 0.25))
+
+hist(rnorm(1000, 5,1),
+	main='', border='firebrick', las=1,
+	xlab='Gaussian distribution',
+	col=adjustcolor('firebrick', 0.25))
+
+hist(rpois(1000, 3),
+	main='', border='purple', las=1,
+	xlab='Poisson distribution',
+	col=adjustcolor('purple', 0.25))
+
+hist(rexp(1000, 1),
+	main='', border='orange', las=1,
+	xlab='Exponential distribution',
+	col=adjustcolor('orange', 0.25))
+
+```
+
+
+
+
+
+
+
+
+Modifying base plots (building from scratch)
+
+```{r}
+plot(1:10, 
+	type='n', las=1,
+	xlab='x label',
+	ylab='y label', 
+	pch=16, axes=FALSE)
+```
+
+
+```{r}
+points(x=1:5, y=1:5, pch=16, col=1)
+points(x=6:10, y=6:10, pch=16, col=2)
+```
+
+
+
+```{r}
+axis(1, at=1:10)
+axis(2, at=1:10, las=1)
+```
+
+
+
+```{r}
+text(4, 4, 'Some text')
+```
+
+
+
+```{r}
+legend('bottomright', 
+	legend=c('item 1', 'item 2'), 
+	pch=16, col=1:2, bty='n')
+```
+
+
+
+
+
+
+
+
+
