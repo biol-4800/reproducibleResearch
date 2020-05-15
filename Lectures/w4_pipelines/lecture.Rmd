@@ -5,19 +5,18 @@ output: pdf_document
 ---
 
 
+https://learn.r-journalism.com/en/publishing/workflow/r-projects/
+https://www.r-bloggers.com/%F0%9F%93%81-project-oriented-workflow/
+
+
+
 
 ## What is an analytical pipeline?
 
+The goal of this course is not only to teach `R` as a scientific programming language, but to help make your analyses _reproducible_ and _portable_. We defined _reproducibility_ as the ability to recreate an analysis and obtain the same output. Here, _portability_ means that the analyses should be _reproducible_ on any machine and any operating system (OS). As a step towards this, it is important to structure the analytical files in a way that they are entirely self-contained, and are clearly written so that anyone can take your code, run it, and reproduce the analyses. 
 
+There are a huge number of benefits to defining your project workflow or "analytical pipeline" as I refer to it. The biggest of these, in my opinion, is that the same template can be used for multiple projects, as your pipeline should be able to be carried over to a new project easily. It also allows collaborators to contribute to your code or manuscript files easily, since they will be able to see and understand the workflow. 
 
-
-
-
-
-
-
-
-## R specific workflow 
 
 
 
@@ -25,24 +24,7 @@ output: pdf_document
 
 ### Writing R scripts
 
-```{r}
-
-
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
+The basic way to write an R script is to have file ending in `.R` which contains the code needed to run a specific analysis. I encourage you to consider using `R markdown`, which is an enhanced `R` script that allows you to include text directly into your `R` script, and can be compiled to html, pdf, and many other output formats. This is useful because it allows your code to not simply be code, but to be a narrative of what you did, why you did it, and what you found. Many researchers now write manuscripts in `R markdown`, as it allows the manuscript file and the analysis file to be the same file. `R markdown` scripts end in `.Rmd`. This lecture is written as an `.Rmd` file, and compiled to pdf for your viewing. Recall what we learned about markdown earlier. Now, to include `R` code, you will have to write code blocks, which start with three backtick symbols (`). 
 
 
 
@@ -52,38 +34,18 @@ output: pdf_document
 
 ### Writing functions
 
-
+We learned the basics of `R` coding previously, ending with how to write functions. Now we will go into a bit more detail as it pertains to your workflow, in that each function should be documented, such that it is portable across analyses and the input and output are clearly defined. We will start with a simple function structure
 
 ```{r}
-
-
 yourFunction <- function(arguments){
 
 	# doing stuff
-
 
 	# returning stuff
 	return(ret)
 }
 
-
-
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -117,20 +79,94 @@ addXY <- function(x,y){
 }
 
 
-
 ```
 
 
 
+Structuring your functions as such will allow you to write clear code, but also to establish code that can be used across projects. For instance, I have written a simple `R` package containing functions I commonly use across projects. Calling in this package gives me access to all my common functions, which you will come to realize is a huge time-saver when you would otherwise be reinventing the wheel with each analysis. One important note here is to write functions in such a way that they can take general input. This means you should: 
+
++ **avoid hard-coding**: this refers to writing functions that will _only_ work with a specific data structure. For instance, explicitly using a column index in a function is bad practice, while including an argument to the function that allows flexible indexing is better
+
+
+```{r}
+# bad
+getColumnMean <- function(mat){
+	mean(mat[,3])
+}
+# better
+getColumnMean <- function(mat, index){
+	mean(mat[,index])
+}
+```
+
+
+
++ **handle potential errors**: errors are inherent in programming, which can be frustrating, but can be managed. Ideally, the code you write should handle errors, NAs, and other things that affect function output. For instance, what happens if we try to take the mean of a character vector, or a numeric vector containing an NA value?
+
+
+```{r}
+# bad
+getColumnMean <- function(mat, index){
+	mean(mat[,index])
+}
+
+# better
+getColumnMean <- function(mat, index){
+	if(any(is.na(mat[,index]))){
+		warning('NA values present...ignoring them')
+	}
+	mean(na.omit(mat[,index]))
+}
+
+```
+
+Here, we write a `warning` statement that tells the user that there is an NA value present, and then we ignore it to calculate the mean of the column. 
 
 
 
 
 
++ **be flexible**: Flexibility comes at a cost, so first you will need to decide the scope with which you want the function to be flexible. However, it is good practice to strive for flexibility in your code. What if we did not simply want the first moment (the mean) of a column, but wanted to decide arbitrarily what action was taken on the column?
+
+```{r}
+# bad
+getColumnMean <- function(mat, index){
+	if(any(is.na(mat[,index]))){
+		warning('NA values present...ignoring them')
+	}
+	mean(na.omit(mat[,index]))
+}
+
+# better
+getColumnInfo <- function(mat, index, func=mean){
+	if(any(is.na(mat[,index]))){
+		warning('NA values present...ignoring them')
+	}
+	func(na.omit(mat[,index]))
+}
+
+```
+
+
+Here, we provide a new argument `func`, which defaults to taking the `mean`, but will accept any function argument. This is useful if we want to get information on the variance, skew, kurtosis, min, max, etc. of the column. 
 
 
 
 
+> side hint: writing plotting functions is incredibly useful, and you can enhance flexibility of your plotting functions by making many arguments (for color, point size, etc.) but having them default to your liking. For instance, I like `pch=16, las=1` for xy plots. On top of this, you can use the `...` operator so you can include an arbitrary number of other arguments to the plotting function. An example below
+
+```{r}
+
+makePlot <- function(y,x, ...){
+	plot(y,x, ...)
+}
+
+```
+
+```{r}
+makePlot(y=runif(100), x=runif(100), 
+	pch=16, las=1, col='dodgerblue')
+```
 
 
 
@@ -156,12 +192,12 @@ addXY <- function(x,y){
 
 A README file is a user-facing file which should detail what your repo is for and how to use it (e.g., reproduce an analysis from data to figures and results). It is normally a .txt or .md extension, meaning it is plain text (.txt) or markdown (.md). README files have been around for well over 50 years, and are essential in designing your workflow. The README should contain the following information:
 
-+ **Name and blame**: the name of the project and the names of the contributors (or at least the main author) 
++ **Name**: the name of the project and the names of the contributors (or at least the main author) 
 + **Background/summary**: what is your project for. In the context of science, you would highlight your main research question
 + **Prerequisites**: things necessary for the code to run effectively. Even if you were to write R code that was entirely reproducible, you are assuming that the user has R installed. Information on necessary programs, libraries, etc. should be listed
 + **Installation**: what commands need to be run to reproduce the analyses? This is a description of how to understand the structure of the repo and how to actually reproduce (or install) the analyses.
 + **Contributors**: Credit existing contributors and state any conflict of interests. 
-+ **Acknowledgements**: Acknowledge financial support or help from organizations 
++ **Acknowledgments**: Acknowledge financial support or help from organizations 
 + **Code of conduct**: A clear statement describing acceptable behavior of contributors as they interact. This is important for larger, public-facing products, as it sets up the expectations of community members in terms of standards (e.g., use of inclusive language) and things that are entirely unacceptable (e.g., sexualized language, trolling, political attacks, etc.)
 + **License info**: Describe what license the code is released under. That is, you are the owner of your intellectual property, and that gives you the right to license it in different ways. 
 
@@ -196,7 +232,7 @@ The end product is a basic license (either "CC0" or "CC BY") with some extra let
 
 ### .gitignore
 
-The .gitignore file is a plain text file that you contains paths to files you wish to not version-control. For instance, I version control my lectures and exams for "Principles of Ecology", but I develop it in a private repo and have the answer keys to exams in my .gitignore, so that I do not version the answer key (just in case). This is also useful for dealing with large files, as Github can only accept files that are less than 100 Mb. This will not automatically be created when you initialize a git repo, so you will have to use your command line skills to create the file (i.e., `touch .gitignore` to create the file; `nano`, `vim`, `emacs`, `gedit` or the like to edit it). Files beginning with a "." are normally not even shown in file managers, but you can see them by hitting "Ctrl + h". 
+The .gitignore file is a plain text file that you contains paths to files you wish to not version-control. For instance, I version control my lectures and exams for "Principles of Ecology", but I develop it in a private repo and have the answer keys to exams in my .gitignore, so that I do not version the answer key (just in case). This is also useful for dealing with large files, as Github can only accept files that are less than 100 Mb. This will not automatically be created when you initialize a git repo, so you will have to use your command line skills to create the file (i.e., `touch .gitignore` to create the file; `nano`, `vim`, `emacs`, `gedit` or the like to edit it). Files beginning with a "." are normally not even shown in file managers, but you can see them by hitting "Ctrl + h" (in Ubuntu). 
 
 
 
@@ -214,12 +250,28 @@ Data is typically a folder containing the assorted data used in the analyses. Fo
 
 
 
+
+
+
 ### Analysis
 
-This folder contains your analytical scripts. For the sake of this class, we will assume that these are R or R markdown scripts. This code can output figures directly into this directory, or can create a "figures" directory and output there. However, it is best practice to not have your code create directories (easier to break). 
+This folder contains your analytical scripts. For the sake of this class, we will assume that these are `R` or `R markdown` scripts. This code can output figures directly into this directory, or can create a "figures" directory and output there. However, it is best practice to not have your code create directories (easier to break). 
+
+It is incredibly important here to use relative paths. It is not uncommon when you see code that has calls like `read.csv('/home/user/myProject/Data/myData.csv')`. This is bad practice, because it assumes I have a home folder, a user folder, and the entire directory structure as the user did. For many, the path I used above will almost never be the case, as it is more typical in the linux OS. For Windows users, it would be something like 'C:\My Documents\Data.csv'. 
+
+
+> Another side 'best practice' point: file names should not have spaces. Spaces are evil, and should be avoided at all costs. 
 
 
 
+
+
+
+
+
+### Manuscript 
+
+This folder contains all the files associated with your manuscript or project write-up (if it has one). I like to separate my manuscript writing from my analysis files, but like to have this as the same set of files. I find that when dealing with large data or complex simulation exercises, it is just not worth it to re-build the analysis each time I want to see the manuscript output. There are ways around this, but they are largely hacky. 
 
 
 
@@ -228,23 +280,38 @@ This folder contains your analytical scripts. For the sake of this class, we wil
 
 ### Makefile
 
-The makefile. It is a real pain sometimes. 
+Makefiles are incredibly useful, and fairly simple to write. We will not go into too much detail on them, but they are essentially recipes that can be used to build your analytical pipeline and reproduce your analyses by issuing one simple command (`make`) from the command line. The makefile is named "Makefile" and is placed in the repository you wish to act on (typically) but can also exist at a higher-level.
 
 
 
+```{r, eval=FALSE}
+
+TEXFILE = manuscript
+paper:
+	xelatex $(TEXFILE).tex
+	bibtex *.aux
+	xelatex $(TEXFILE).tex
+	xelatex $(TEXFILE).tex
+	rm -fv *.aux *.log *.toc *.blg *.bbl *.synctex.gz
+	rm -fv *.out *.bcf *blx.bib *.run.xml
+	rm -fv *.fdb_latexmk *.fls
+
+view:
+	evince $(TEXFILE).pdf &
+
+clean:
+	rm -fv *.aux *.log *.toc *.blg *.bbl *.synctex.gz
+	rm -fv *.out *.bcf *blx.bib *.run.xml
+	rm -fv *.fdb_latexmk *.fls
+	rm -fv *.pdf
+
+```
+
+This makefile is used to compile a manuscript written in latex. The file is named 'manuscript'. The default is the first bit (`paper`). When I want to run it, I issue the command `make paper` from the terminal when my working directory is where the makefile is. This issues terminal commands that run `xelatex` and `bibtex` to compile my manuscript into pdf, and then remove `rm` a bunch of unncessary files to keep my directory tidy. If I wanted simply to clean a repo of these files without re-compiling the manuscript, I could use `make clean`. 
 
 
 
-
-
-
-
-
-
-
-
-
-
+`R` scripts can be run from the command line using the `Rscript` or `R -e ` flags. This means that your makefile could be used to compile all your analyses, without the end user needing to know how to compile your code...meaning that they would not have to know `R` or `R markdown`, but they would need to have `make` installed and know how to use that. This means this is not a silver bullet for reproducibility, but it will save you some time and help keep your analytical pipeline clean and structured.
 
 
 
@@ -258,7 +325,7 @@ The makefile. It is a real pain sometimes.
 
 ## Continuous integration 
 
-What is the point? Go over a small high-level example (and introduce Travis CI here).
+Continuous integration is the practice of building and checking your project iteratively with each change made, rather than trying to ensure that everything runs only at the end of the development cycle. In the context of project development and pipelines, having a `travis.yml` file in your repo ensures that every time you make a change to your directory and push it to Github, tests on your analysis can be run and compared to expectations. We will go over this in more detail when we talk about testing in more detail. But I wanted to introduce Travis CI as a continuous integration service that is useful to developing your `analytical pipeline`. More on this later.
 
 
 
@@ -266,6 +333,15 @@ What is the point? Go over a small high-level example (and introduce Travis CI h
 
 
 
+
+
+
+
+
+
+# Other ways
+
+There are plenty of ways to structure your analytical pipeline! I give the example I use above, but it is personal preference. One alternative is to structure your analytical pipeline as an `R` package (https://www.carlboettiger.info/2012/05/06/research-workflow.html), while others promote the use of `bookdown`, `rticles`,and other packages. This starts to get away from reproducibility concepts a bit, as there is no guarantee that these packages will be available in $t$ years, meaning that your reproducible analytical workflow could be easily broken as a result.
 
 
 
