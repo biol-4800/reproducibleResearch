@@ -8,6 +8,59 @@ output: pdf_document
 
 ## What are dependencies?
 
+We have covered dependencies a bit throughout this course, with the general approach that we should limit the number of `R` packages that our analytical workflow relies on. _Dependencies_ refers to these external packages which we rely on. There are a number of issues with including too many dependencies. 
+
+
+### Dependencies can change
+
+Your code from 10 years ago likely depends on packages that have almost certainly been updated and changed. This may break your code, if the package maintainers were not nice enough to make their new code backward compatible (hint: the maintainers are mostly us, and we have no idea what we are doing). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Dependencies have dependencies
+
+`R` packages have dependencies (this is normally how the term 'dependency' is used in the Rstats community in my experience). These are other `R` packages which provide essential functionality to the package. This becomes pretty apparent when we try to issue a command like 
+
+```{r}
+
+install.packages('tidyverse', dependencies=TRUE)
+
+```
+
+This installs not just the 8 core tidyverse packages, but also any packages that these packages depend on. How does this look?
+
+
+```{r}
+
+library(tidyverse)
+sessionInfo()
+
+```
+
+yikes. 
+
+
+
+
+### Dependencies may be OS sensitive
+
+We would like to think that since `R` can be installed across operating systems (OS), that packages built on top of `R` would also have that flexibility. This is not true. For example, the `osrm` package requires that you build a local instance of the OpenStreetMap-Based Routing Service (OSRM), which is dependent on OS. Another example is in `rstan`, which -- like many other R packages with a C++ backend -- require different instructions for installation for different operating systems. And the way dependencies work, this bug will not only affect the `osrm` and `rstan` packages, but any packages which rely on the successful installation of these packages. Now we can see how the web of dependencies among `R` packages can cause some issues. 
+
+
+
+
+
 
 
 
@@ -25,8 +78,32 @@ output: pdf_document
 
 ## What is dependency hell?
 
+Dependency hell is not just about this inter-related network of package dependencies that could hamper the reproducibility of analytical pipelines. 
+
+It can take on a few different forms that -- if and when you encounter them -- will infuriate you. 
+
+1) Packages or some software relies on specific versions of other software. You may have hit this with `R` packages depending on a newer version of `R` than you have installed. This is a relatively easy fix. When this becomes irksome is when two different softwares rely on the same underlying software, but different versions (just ran into this with tensorflow, python, and some other software). So if you upgrade or downgrade to make one software work, the other software may break. 
+
+2) Many dependencies. Some packages have a super long list of dependencies (e.g., `devtools`) and takes a bit of time and memory to install all that mess. 
+
+3) Dependency chains. The packages which a package depends on may have further dependencies. This creates a situation where the user must download and configure numerous packages thanks to the dependencies of a dependency. 
 
 
+
+
+
+
+
+
+
+
+
+
+Claes et al. 2014 found that "occurrence of errors in CRAN packages over a period of three months ... resulted mostly from updates in the packages’ dependencies ..."
+
+
+
+> Claes, M., Mens, T., & Grosjean, P. (2014). On the maintainability of CRAN packages. 2014 Software Evolution Week - IEEE Conference on Software Maintenance, Reengineering, and Reverse Engineering (CSMR-WCRE). https://doi.org/10.1109/csmr-wcre.2014.6747183
 
 
 
@@ -50,9 +127,38 @@ output: pdf_document
 
 ## How do I avoid dependency hell?
 
+
+### Use fewer dependencies
+
+A clear way to stay out of dependency hell is to simply use fewer dependencies. This may simply not be feasible for some projects (e.g., geospatial data racks up dependencies pretty quickly). If you are only using one function from a package, consider reverse engineering it or checking out their source to see if you can simply include it in your workflow without requiring it to be called in with the `library` function. There are some good articles on code dependency and this semi-minimalist mentality (http://www.tinyverse.org/), and also some more general discussion about the nuances of dependency management (https://rstudio.com/resources/rstudioconf-2019/it-depends-a-dialog-about-dependencies/). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Be explicit about packages and versions
 
-Discuss semantic versioning here a bit. 
+Packages are versioned quite effectively using semantic versioning. This is an approach which provides information package history and version, and comes in the form of "majorVersion.minorVersion.patch". At the time of writing these notes, the `R` package devtools was at version 2.3.0. Semantic versioning is good practice, and essentially tags package versions that can then be targetted for specific installation. How does this help with reproducibility? We can specify the `R` package versions that we would like to install, essentially making sure that no changes to the packages could break functionality. Where this fails is when the installation of a previous version of a package fails to install the correct version of the dependencies, breaking core functionality despite being the correct package version. 
+
+
+```{r, eval=FALSE}
+
+cranUrl <- "http://cran.r-project.org/src/contrib/Archive/vegan/vegan_2.0-0.tar.gz"
+install.packages(cranUrl, repos=NULL, type="source")
+
+```
+
+This installs the `vegan` package version 2.0.0 from the year 2011 to my computer. The obvious downside to this is that now I have a super outdated version of `vegan`, and other packages installed on my machine that rely on `vegan` (e.g., `metacom`) are broken. There is a nice way around this, which I discuss below, and have been told by the internet and interactions with colleagues is not worth trying to teach at this level given the breadth of material already covered. The way around this is called "containerization". Basically, if you do not want to install outdated packages on your machine that will break existing functionality, one solution is create a separate "container" with some basic OS that is separate from your existing OS. More on that below.
 
 
 
@@ -62,7 +168,24 @@ Discuss semantic versioning here a bit.
 
 ### Use a service 
 
-packrat or the like. 
+Before we talk about containerization a bit further, I would like to note that there are existing packages to handle dependencies. There are two main packages for package management: `packrat` and `renv`. I will only go over `packrat`, as they both use similar concepts, but there are some neat things about `renv` that may make it "better". 
+
+
+```{r, eval=FALSE}
+
+packrat::init("myProject")
+
+```
+After this command is issued, any packages installed from inside this packrat project are **only available to that project**. Updates to the existing `packrat` state are performed using the `packrat::snapshot` function. 
+
+
+Starting `R` from the directory (`myProject`) will automatically load the packages in their specific versions required for your analytical workflow. So provided that the end user has `R` installed and has `packrat` installed, the rest of the analytical pipeline should be _fairly_ reproducible (barring any OS-specific issues, etc.).
+
+
+
+
+
+
 
 
 
@@ -74,7 +197,12 @@ packrat or the like.
 
 ### Build the OS from scratch
 
-virtual machine or Docker (pretty much bomb proof, but perhaps overkill for most of our applications). 
+This can be in at least two ways. First, we could use a virtual machine to set up an operating system on our local machine. Imagine this like opening up an internet browser, but instead of a browser, the window contains an entirely separate operating system, with file structures and software independent of the host OS. This can be incredibly useful. If your analytical pipeline also contains a VM image, this could be ensure reproducibility. How this would work is you would set up a virtual machine image of whatever OS you have access to (e.g., linux OS is nice because it is free and well supported), set up the image as persistent (meaning that files created within the image and software installed in the image are available after the instance of the OS is shut down), and then making sure all the dependencies specific to the project are installed and versioned. Boom. 
+
+**Why is this not the norm?**: because it is a big pain! It also assumes that the user has some form of virtual machine software like VMware or VirtualBox, that the user is comfortable in whatever OS the virtual machine is in, etc. As we can sort of imagine, the layers of complexity to ensure reproducibility may also reduce accessibility to the majority of people who might want to run your code. This is a huge pain point, and something that has prevented me from taking some of these steps (e.g., using Docker images) in my own research. 
+
+
+Docker images are a slightly more simple approach to virtualization, in that the containerization approach of Docker reduces the huge computational overhead in using Virtual Machines, as having two operating systems running with separate software and shared hardware is pretty demanding. Containers bypass this issue by sharing the OS kernel of the host machine. More information on this idea and the differences between containers and virtual machines is available at https://www.docker.com/resources/what-container. 
 
 
 
@@ -83,49 +211,7 @@ virtual machine or Docker (pretty much bomb proof, but perhaps overkill for most
 
 
 
-
-
-
-
-
-
-
-##
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 
-
-
-
-
-
-
-
-
-
-
-
-
-## 
-
-
-
-
+((do I give a quick Docker tutorial here, or is that beyond the scope of what I should do?))
 
 
 

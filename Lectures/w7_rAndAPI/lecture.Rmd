@@ -11,12 +11,14 @@ output: pdf_document
 
 ## What's the point of APIs?
 
+APIs (Application Progrmming Interfaces) are 
+`API` is a general term mainly used to describe the communication of one computer to a web-based source of data in a programmatic manner. The computer (client) makes a request for data in a well-documented and consistent way, and receives data from the server. This is incredibly useful for acquiring data in a programmatic way, allowing analyses to be re-run on dynamic data, creating a living analysis. This could be critical in situations such as an ongoing pandemic, where daily case count updates might change model parameters or predictions. 
 
+Many websites have APIs in order to allow users to make calls and develop apps on top of existing sites e.g., Facebook, Spotify, etc. all have APIs. 
 
+Why is this valuable? Contrast the API approach to pure web scraping. Web scraping refers to extracting data from html pages. This is different from querying an API, as APIs will have documentation about how the data are represented. For instance, what happens when a website decides to change a bit of it's formatting? This would potentially break any web scraping code, but the API backend would be maintained. 
 
-
-
-
+In the context of biological data, many data repositories (figshare, data dryad, dataONE) have clear APIs. Further, it is becoming more common for large museum and government datasets to have developed APIs. I'm a huge fan of this, as it is a departure from the longstanding "my data" mentality that has lead to a clear power dynamic (e.g., being associated with labs with lots of data gives them a clear advantage...but those data were likely gathered with a combination of taxpayer dollars and researcher sweat. The dollars trump the sweat, in my opinion.). 
 
 
 
@@ -25,34 +27,422 @@ output: pdf_document
 ## How do I query an API?
 
 
+APIs can be queried programmtically using a number of `R` packages. Some APIs will promote their own `R` packages that have functions specific to their data structures or API. However, at the core of these packages are a small number of low-level packages for querying APIs. 
+
+The general structure of an API call is the same relatively regardless of `R` package used. The parameters of an HTTP request are typically contained in the URL. For example, to return a map of Manchester using the Google Maps Static API we would submit the following request:
+
+```{r, eval=FALSE}
+https://maps.googleapis.com/maps/api/staticmap?center=Manchester,England&zoom=13&size=600x300&maptype=roadmap
+```
 
 
+The request contains:
+
++ a URL to the API endpoint (https://maps.googleapis.com/maps/api/staticmap?) and;
++ a query containing the parameters of the request (center=Manchester,England&zoom=13&size=600x300&maptype=roadmap). In this case, we have specified the location, zoom level, size and type of map.
 
 
-
-## R packages for data acquistion
-
+Web service APIs use two key HTTP verbs to enable data requests: GET and POST. A GET request is submitted within the URL with each parameter separated by an ampersand (&). A POST request is submitted in the message body which is separate from the URL. The advantage of using POST over GET requests is that there are no character limits and the request is more secure because it is not stored in the browser’s cache.
 
 
-
-
-
-
-
-
-
-## 
-
-
-
-
+There are several types of Web service APIs (e.g. XML-RPC, JSON-RPC and SOAP) but the most popular is Representational State Transfer or REST. RESTful APIs can return output as XML, JSON, CSV and several other data formats. Each API has documentation and specifications which determine how data can be transferred. 
 
 
 
 
 
 
-## 
+ 
+```{r}
+
+install.packages(c("httr", "jsonlite"))
+
+```
+
+
+
+
+After downloading the libraries, we’ll be able to use them in our `R` scripts or `RMarkdown` files.
+
+```{r}
+
+library(httr)
+library(jsonlite)
+
+```
+
+
+
+
+
+## A simple example of an API call 
+
+Some APIs require a token, in order to identify who is accessing the data (e.g., Spotify, Facebook, etc.). Developer access is pretty easy to get when you have an account, but it is a bit too much of a hassle for demonstration purposes. So we will use an open API from the Internet Archive's _Open Library_. 
+
+We can send a request for data by using the documented API put out by the data provider, which consists of a base url (http://openlibrary.org/search.json?) with an amended query for searching the database. We use the GET verb, which is in `R` but stems from HTTP (hypertext transfer protocol). It stores all the information in an object that is structured in JSON. Below, we search the Open Library for "Vonnegut", and receive a nested list which includes information on status codes, among other relevant information. 
+
+
+```{r}
+
+von <- httr::GET('http://openlibrary.org/search.json?q=vonnegut')
+str(von)
+
+```
+
+
+This data structure is basically in JSON format, which is a different file format (e.g., xml, htm, etc.). To make it something that `R` can work with, we use the `jsonlite` package, and function `fromJSON`. 
+
+
+
+```{r}
+
+vonInfo <- jsonlite::fromJSON(content(von, "text"), simplifyVector = FALSE)
+
+```
+
+
+This output is a list of length 4, each containing a nested list. It's not the cleanest output, but it rarely is. But all the information you could want is buried somewhere here. 
+
+
+This apply statement gets information on the title of each of the works returned from our search for "Vonnegut". 
+
+
+```{r}
+
+sapply(vonInfo[[4]], function(x){
+  x$title
+})
+
+```
+
+
+But Vonnegut as a search term is misleading, because many people have written books on Vonnegut, while we may want books _by_ Vonnegut. 
+
+
+
+
+
+
+
+```{r}
+
+von2 <- httr::GET('http://openlibrary.org/search.json?author=vonnegut')
+str(von2)
+
+```
+
+
+This data structure is basically in JSON format, which is a different file format (e.g., xml, htm, etc.). To make it something that `R` can work with, we use the `jsonlite` package, and function `fromJSON`. 
+
+
+
+```{r}
+
+vonInfo2 <- jsonlite::fromJSON(content(von2, "text"), simplifyVector = FALSE)
+
+```
+
+This is better, as it now provides information on books where Vonnegut was listed as an author. 
+
+
+```{r}
+
+sapply(vonInfo2[[4]], function(x){
+  x$title
+})
+
+```
+
+
+
+
+
+> Side fun note: You can access Github info through API calls as well
+
+```{r}
+
+tad <- GET('https://api.github.com/users/taddallas')
+tadInfo <- jsonlite::fromJSON(content(tad, "text"), simplifyVector = FALSE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+## A more biological example
+
+
+So this gives a good background about APIs, but it does not give a good biological example of when they are useful. The books that Vonnegut wrote are unlikely to change, so the search queries to this API are fairly static, and a bit removed from biology. 
+
+One good biology API that is open is the Global Biodiversity Information Facility (GBIF). We can use a similar structure to our Open Library query to obtain information on species names and occurrences. 
+
+```{r}
+
+giraffe <- httr::GET('https://www.gbif.org/developer/species/Giraffa+camelopardalis')
+str(giraffe)
+
+```
+
+
+Before we dive too far down this hole, it is important to note that this wheel has already been invented and is being maintained by the ROpenSci collective, a group of `R` programmers who develop tools for the access and analysis of data resources. We will use this package, not because it enhances reproducibility (as it is yet another dependency), but because it's well-written, well-documented, and from a group of scientists committed to helping make open data available and analyses reproducible. 
+
+
+```{r}
+
+install.packages('rgbif')
+giraffe <- rgbif::occ_search(scientificName = "Giraffa camelopardalis", 
+	limit = 5000)
+
+```
+
+> Depending on your operating system (OS) and previously installed packages, this is where we start to get into isuses of dependencies. The `rgbif` package requires the installation of `rgeos`, which requires the `geos` library to be installed outside of `R`. Hopefully you will be able to successfully install the package, but it is an important note that handling these dependency and OS-specific issues is pretty central to making sure an analytical pipeline is reproducible. 
+
+
+So presumably we have successfully queried the GBIF API using the `rgbif` package, and now have a data.frame of giraffe occurrences (limited to 5000 occurrence points). The output data are structured as a list of lists, which is a bit confusing if we look at the `str()` of `giraffe`, as the authors of the package have created a `class` called `gbif` to hold all the data. This is common in `R` packages, and the authors have written in some great functionality in printing and working with these data, formatting the data as a `tibble` object. We will not go too much into `tibble`s, but they are pretty useful for keeping data in a "tidy" format, as columns in a tibble can be lists (e.g., what if we wanted to store spatial polygon information, vectors, etc. alongside each row element? `tibble` handles this need effectively). 
+
+
+
+```{r}
+
+typeof(giraffe)
+class(giraffe)
+
+```
+
+
+
+For simplicity sake, we can use some of the functionality within `rgbif` to just return the data we are interested in, specifying that we only want the raw data, not all the potential data (which includes images, etc.)
+
+
+```{r}
+
+giraffe2 <- rgbif::occ_search(scientificName = "Giraffa camelopardalis", 
+	limit = 5000, return='data')
+
+```
+
+
+
+We will quickly plot these data out just to show them in geographic space. We first create a base map using the `maps` package, which is a really easy way to plot geopolitical boundaries. Then we layer on the occurrence data using the `points` function.
+
+```{r}
+install.packages('maps')
+
+maps::map()
+points(giraffe2$decimalLongitude, giraffe2$decimalLatitude, pch=16, 
+	col=grey(0.1,0.5))
+
+```
+
+
+Giraffes are in the US!!! These are almost certainly zoo records or errors. We will now shift into `R` visualization approaches, as we have some data, and the need to visualize it is present.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Interfacing with local databases
+
+Accessing data through APIs is fantastic, but there are plenty of times where you may need to access large data files locally. Note that this only is necessary if the data you are working with cannot fit into local memory. Otherwise, there is no real advantage to using a database framework, as it will likely be more expensive in terms of time and potential frustration. 
+
+
+For this, we will have to include a dependency, which of course has a bunch of other dependencies. This is not really ideal given the focus on reproducible research in the course, but it is sadly pretty much necessary. 
+
+
+```{r}
+
+install.packages('dbplyr')
+
+```
+
+
+When referring to "databases", we may think that there is a single type or schema, but this is definitely not the case. `R` has a way to accomodate for different database types, and that is to include a dependency for each database type (maybe not ideal). Below is a list describing the different ways `R` interfaces with different database types (taken from https://www.kaggle.com/anello/working-with-databases-in-r). 
+
++ RMySQL connects to MySQL and MariaDB
++ RPostgreSQL connects to Postgres and Redshift.
++ RSQLite embeds a SQLite database.
++ odbc connects to many commercial databases via the open database connectivity protocol.
++ bigrquery connects to Google’s BigQuery.
+
+
+We will focus on the use of RSQLite as a backend to connect to SQLite databases. This will sadly require another dependency. 
+
+```{r}
+
+install.packages('RSQLite')
+
+```
+
+
+
+
+
+
+```{r}
+
+dir.create("data_raw", showWarnings = FALSE)
+download.file(url = "https://ndownloader.figshare.com/files/2292171",
+              destfile = "data_raw/portal_mammals.sqlite", mode = "wb")
+```
+
+
+
+
+```{r}
+
+mammals <- DBI::dbConnect(RSQLite::SQLite(), "data_raw/portal_mammals.sqlite")
+src_dbi(mammals)
+
+```
+
+
+Just like a spreadsheet with multiple worksheets, a SQLite database can contain multiple tables. In this case three of them are listed in the tbls row in the output above:
+
++ plots
++ species
++ surveys
+
+
+Now that we know we can connect to the database, let’s explore how to get the data from its tables into R.
+
+### Querying the database with the SQL syntax
+
+To connect to tables within a database, you can use the tbl() function from dplyr. This function can be used to send SQL queries to the database. To demonstrate this functionality, let’s select the columns “year”, “species_id”, and “plot_id” from the surveys table:
+
+
+```{r}
+
+tbl(mammals, sql("SELECT year, species_id, plot_id FROM surveys"))
+
+```
+
+
+
+With this approach you can use any of the SQL queries we have seen in the database lesson.
+
+
+### Querying the database with the dplyr syntax
+
+One of the strengths of dplyr is that the same operation can be done using dplyr’s verbs instead of writing SQL. First, we select the table on which to do the operations by creating the surveys object, and then we use the standard dplyr syntax as if it were a data frame:
+
+```{r}
+
+surveys <- tbl(mammals, "surveys")
+surveys %>%
+    select(year, species_id, plot_id)
+```
+
+In this case, the surveys object behaves like a data frame. Several functions that can be used with data frames can also be used on tables from a database. For instance, the head() function can be used to check the first 10 rows of the table:
+
+
+```{r}
+
+head(surveys, n = 10)
+
+```
+
+
+
+
+
+```{r}
+
+surveys2 <- surveys %>%
+  filter(weight < 5) %>%
+  select(species_id, sex, weight)
+
+```
+
+
+
+
+`R` makes lazy calls to databases, until you make it not be lazy. That is, everything is held outside of memory until you tell `R` that some portion of the data should not be. 
+
+```{r}
+
+head(surveys2)
+
+```
+
+
+
+To pull the data into memory and allow us to use the data, we must use the `collect` function. 
+
+```{r}
+
+surveys3 <- collect(surveys2)
+head(surveys3)
+
+```
+
+
+
+This difference becomes clear when we try to index a specific column of data and work with it. 
+
+```{r}
+
+surveys2$sex
+surveys3$sex
+
+```
+
+
+
+
+
+
+
+
+
+
+
+### Relating this back to the `dplyr` syntax of joins
+
+We discussed joins in the data manipulation section. Joins are pretty key to working with databases, as much of the benefit of database structure is from nested data and the utility of key values. For instance, in our mammal sampling data, we have plot level data...
+
+```{r}
+
+plots <- tbl(mammals, "plots")
+plots
+
+```
+
+
+and survey-level data, where plot-level data provides what is essentially metadata for each survey. 
+
+
+We can use joins to combine and manipulate these data, as we did before, but now in the context of the database structure.
+
+
+
+```{r}
+
+survPlot <- left_join(surveys, plots, by='plot_id')
+
+```
+
+
+
 
 
 
@@ -74,14 +464,12 @@ output: pdf_document
 
 
 
-
-
-
-
-
-
-
 ## R visualizations
+
+Visualizing data is arguably the most fun thing to do in `R`, and is important to communicate the results of analyses, the structure of data, and the sign and strength of relationships. Also, I definitely recommend routinely plotting out your data in order to visually explore outliers, potential errors, data distributions, etc. This approach can generate new ideas, sanity check the data, and provides immediate feedback to the user on data quality/issues/size/etc.
+
+
+There are multiple schools of though regarding generating visualizations in `R`. The loudest of these camps are the `ggplot2` users. Built using ideas from the Grammar of Graphics, `ggplot2` is integrated into the `tidyverse` and creates some decent-looking plots. I have some issues with the use of `ggplot2`, and will teach you how to make visualizations using base `R`. This is 1) because this course is on reproducibility, and `ggplot2` is liable to change and break your plotting code, and 2) `ggplot2` pretty much creates a language of it's own for plotting (e.g., aes, geom_point, etc. etc.) and I'd rather focus on things like look more like `R` code that give you the customizability (e.g., Google "how do I change axis label?" or something fairly simple and you'll see the `ggplot2` folks struggling). There is also the `lattice` package, which is pretty solid for multi-panel plots and definitely has some cool functions (their `lattice::levelplot()` is a common go-to for making heatmaps for me). But base `R` can make everything you need.  
 
 
 
@@ -95,14 +483,43 @@ plot(1:10)
 ```
 
 
+This is an ugly plot. But we can make it prettier. The full range of ways we can make it prettier is provided in the documentation of the `plot` function. For simplicity, I will only go over some basic ways to customize your plots here. 
 
 
 
+```{r, eval=FALSE}
+?plot
+```
 
 
-Different forms of plots
 
 ```{r}
+
+plot(x=1:10, y=runif(10), 
+  type='b', 
+  ylab='Y label', 
+  xlab='X label', 
+  pch=1:10, 
+  col=1:10, 
+  las=1
+)
+
+```
+
+
+
+
+
+
+
+
+
+
+The `plot` function is general, and will putatively work with many different objects. Functions written in `R` libraries use base `R` plotting while specifying things specific to the data structure. But there are also a bunch of other base `R` functions for making plots. 
+
+
+
+```{r, eval=FALSE}
 
 plot()
 hist()
@@ -111,7 +528,6 @@ image()
 
 ```
 
-Other packages exist for plotting like `levelplot` and `ggplot2`. 
 
 
 
@@ -123,7 +539,69 @@ Other packages exist for plotting like `levelplot` and `ggplot2`.
 
 
 
-Setting `par`
+## `par` is your friend
+
+`par` is used to set and query your graphical parameters. This is incredibly useful, as it allows you to customize the plotting space itself (e.g., setting margins). If you call `par()` with no specifications, it provides you a long list of all the default parameters. Every single one of these can be changed, giving the user the freedom to design the plotting space exactly to their needs.
+
+
+```{r, eval=FALSE}
+
+par()
+
+```
+
+
+
+
+One of the most useful arguments to `par` in my opinion is setting the plotting margins (`mar` to set inner margins, or `oma` to set outer margins). I mostly worry about the inner margins (`mar`).
+
+```{r}
+
+par(mar=c(5,5,5,5))
+hist(runif(1000), 
+	main='', border='dodgerblue', las=1,
+	xlab='Uniform distribution',
+	col=adjustcolor('dodgerblue', 0.25))
+
+
+par(mar=c(10,10,0.5,0.5))
+hist(runif(1000), 
+	main='', border='dodgerblue', las=1,
+	xlab='Uniform distribution',
+	col=adjustcolor('dodgerblue', 0.25))
+
+
+par(mar=c(4,4,0.5,0.5))
+hist(runif(1000), 
+	main='', border='dodgerblue', las=1,
+	xlab='Uniform distribution',
+	col=adjustcolor('dodgerblue', 0.25))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Using the layout function to make panel plots
+
 
 ```{r}
 
@@ -157,42 +635,83 @@ hist(rexp(1000, 1),
 
 
 
-Modifying base plots (building from scratch)
+
+
+
+
+
+Modifying base plots (building from scratch). The code below uses the `type='n'` argument, which creates a graphical window, but does not plot the data. We also set `axes=FALSE`, which removes x and y axes. This creates a blank slate that we can layer additional information on.
 
 ```{r}
 plot(1:10, 
-	type='n', las=1,
-	xlab='x label',
-	ylab='y label', 
-	pch=16, axes=FALSE)
+	type='n', 
+	axes=FALSE)
+
 ```
 
 
+
+
+Plot the points
+
 ```{r}
+
 points(x=1:5, y=1:5, pch=16, col=1)
 points(x=6:10, y=6:10, pch=16, col=2)
+
 ```
 
-
+Set up the axes.
 
 ```{r}
+
 axis(1, at=1:10)
 axis(2, at=1:10, las=1)
+
 ```
 
 
 
+Add some text to the plot.
+
 ```{r}
+
 text(4, 4, 'Some text')
+
 ```
 
 
+Include a legend
 
 ```{r}
+
 legend('bottomright', 
 	legend=c('item 1', 'item 2'), 
 	pch=16, col=1:2, bty='n')
+
 ```
+
+
+
+From this exercise, we can see that we have complete control over the base `R` plotting. This is not really the case with `ggplot2`, or at least not quite as easily. 
+
+
+
+## Some other side considerations
+
+Color is important while plotting, but we want to make sure that the use of color is informative and accessible to all. Color palettes which are color-blind friendly and easily convertable to greyscale for black-and-white printers. This can be done by Googling color palettes and providing them to `R` as a vector of hex codes (e.g., c("#999999", "#E69F00", "#56B4E9")) or html color names (e.g., `c('dodgerblue', 'firebrick', 'purple')). I like hex codes because they are unlikely to change, and are a good way to specify the exact color you want. 
+
+
+If you want to use existing color palettes, there is no shortage of `R` packages that are just color palettes. My feelings are mixed on this. One of the most developed of these packages is `RColorBrewer`, which has a nice set of palettes to use in different situations (sequential, paired, diverging, etc.), and is really easily accessible and straightforward to use. 
+
+
+```{r, eval=FALSE}
+
+library(RColorBrewer)
+display.brewer.all(colorblindFriendly = T)
+
+```
+
 
 
 

@@ -198,6 +198,8 @@ While a bit opaque, these functions are pretty useful in a variety of situations
 
 
 
+
+
 ```{r}
 lst <- list(1:10)
 lst
@@ -521,7 +523,7 @@ tmp3 <- dat %>%
 
 The results of these two are identical (`all(tmp3==tmp2)` returns TRUE).
 
-This is useful, as commands can be chained together, including the creation of new variables, subsetting and summarising of existing variables, etc. 
+This is useful, as commands can be chained together, including the creation of new variables, subsetting and summarising of existing variables, etc. One thing to keep in mind is to check intermediate results -- instead of just piping all the way through -- as data manipulation errors can be introduced mid-statement and go unnoticed. 
 
 
 

@@ -193,16 +193,23 @@ More information on registering a disability is available at [LSU Disability Ser
 | 1  | Background | -- |
 | 2  | Intro to tools (git, Github, unix command line) |   |
 | 3  | R basics (including Rmd)  | `rIntro` |
-| 4  | Analytical pipeline structure (make, Travis)  | --  |
+| 4  | Analytical pipeline structure (make, Travis)  | `rPipeline` |
 | 5  | R data manipulation  | `rDataManip` |
 | 6  | Unit testing and line profiling | `rTesting` |
 | 7  | R, APIs, and data visualization  | `rAndAPI` |
-| 8  | Dealing with spatial data  | `rSpatial` |
-| 9  | Dependency hell and containerization (or OA) | -- |
+| 8  | R markdown and LaTeX | -- | 
+| 9  | Dependency hell and containerization | -- |
 | 10 | Parallel computing | --  |
 | 11 | Final projects 1  | --  |
 | 12 | Final projects 2  | -- |
 
+
+
+Things not covered, but maybe can be covered given student interest:
+
++ creating an R package
++ code benchmarking
++ handling spatial data 
 
 
 
