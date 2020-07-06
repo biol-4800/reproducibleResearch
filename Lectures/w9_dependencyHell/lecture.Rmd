@@ -6,6 +6,16 @@ output: pdf_document
 ---
 
 
+### Reading for this week:
+
+> Boettiger, C. (2015). An introduction to Docker for reproducible research. ACM SIGOPS Operating Systems Review, 49(1), 71-79.
+
+
+
+
+
+
+
 ## What are dependencies?
 
 We have covered dependencies a bit throughout this course, with the general approach that we should limit the number of `R` packages that our analytical workflow relies on. _Dependencies_ refers to these external packages which we rely on. There are a number of issues with including too many dependencies. 
@@ -161,7 +171,7 @@ install.packages(cranUrl, repos=NULL, type="source")
 This installs the `vegan` package version 2.0.0 from the year 2011 to my computer. The obvious downside to this is that now I have a super outdated version of `vegan`, and other packages installed on my machine that rely on `vegan` (e.g., `metacom`) are broken. There is a nice way around this, which I discuss below, and have been told by the internet and interactions with colleagues is not worth trying to teach at this level given the breadth of material already covered. The way around this is called "containerization". Basically, if you do not want to install outdated packages on your machine that will break existing functionality, one solution is create a separate "container" with some basic OS that is separate from your existing OS. More on that below.
 
 
-
+side note: adding the function `sessionInfo()` to the end of your `Rmd` file will output relevant information on your OS, R version, and different packages that are loaded into the workspace. While this places the onus on the reader to try to mirror your settings, it is a nice addition to a Rmd file.
 
 
 

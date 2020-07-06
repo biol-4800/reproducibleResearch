@@ -5,6 +5,13 @@ date:
 output: pdf_document
 ---
 
+### Reading for this week:
+
+> https://paldhous.github.io/ucb/2016/dataviz/week7.html
+
+
+
+
 
 ## Data 
 

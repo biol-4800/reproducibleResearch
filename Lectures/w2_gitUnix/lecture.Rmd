@@ -6,6 +6,14 @@ output: pdf_document
 ---
 
 
+### Reading for this week:
+> Ram, K. (2013). Git can facilitate greater reproducibility and increased transparency in science. Source code for biology and medicine, 8(1), 1-8.
+
+
+
+
+
+
 
 ## Unix (bash) shell
 
@@ -100,9 +108,21 @@ A few other important functions are given below. The best way to learn about the
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## Downloading programs that you need
 
-This section will focus on how to install things (and permissions, generally) on Ubuntu. If we want to install a program called htop, we could issue:
+This section will focus on how to install things on Ubuntu. If we want to install a program called htop, we could issue:
 
 ```
 apt-get install htop
@@ -121,15 +141,6 @@ You also do not strictly need the "-get" part of that. This is a holdover from a
 
 
 
-
-
-### piping
-
-We may want to multiple tasks that build on one another (e.g., sort the output of ls). To do this, a useful method is to use the unix pipe. The pipe basically takes the output of the first thing and hands it to the next thing, separated by a "|" character. For instance, if we want to list the contents of the working directory, and then sort them, we could issue
-
-```
-ls | sort
-```
 
 
 
@@ -152,12 +163,6 @@ ls | sort
 
 
 ---
-
-
-
-
-
-
 
 
 

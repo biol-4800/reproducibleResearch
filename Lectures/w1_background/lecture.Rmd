@@ -7,32 +7,67 @@ output: pdf_document
 
 
 
+### Reading for this week:
+
+> Munafò, M. R., Nosek, B. A., Bishop, D. V., Button, K. S., Chambers, C. D., Du Sert, N. P., ... & Ioannidis, J. P. (2017). A manifesto for reproducible science. Nature human behaviour, 1(1), 1-9.
+
+
+
+                     
+
+
+
 
 ## Structure of the class
 
-Syllabus, my expectations, your expectations, 
+### Syllabus 
+
+We will go over this the first day of class. The first week will be no recorded lectures, and then the second week we will dive into the course design of 1 recorded lecture and 1 discussion/deep dive/clarification lecture. 
+
+
+
+
+
+### My expectations
+
++ I expect that you apply yourself in an earnest attempt to learn the material. Everyone learns at their own pace, but I take it that if you were not interested in the material, you would not have signed up for the class? I think everyone here is excited to learn R and more about issues around reproducibility. 
+
++ I expect that you treat other students in the course fairly. I will not tolerate any form of discrimination or disparaging remarks to your colleagues. 
+
++ I expect that you do your own work. Every coder writes code differently. If I see the same code from two different people, it is a huge red flag. I will not accept copying of code, even if the original code was in the creative commons (you will get this joke later in the course if you do not understand now). 
+
+
+
+
+
+
+
+### Your expectations
+
+We will discuss these in the lecture. I would say 'think-pair-share', but I have no idea how to do that with Zoom. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 ## What is reproducible research?
 
 
-reproducibility is obtaining consistent results using the same input data; computational steps, methods, and code; and conditions of analysis. This definition is synonymous with “computational reproducibility,” and the terms are used interchangeably in this report.
-
-Replicability is obtaining consistent results across studies aimed at answering the same scientific question, each of which has obtained its own data.
+**Reproducibility** is obtaining consistent results using the same input data; computational steps, methods, and code; and conditions of analysis. This definition is synonymous with “computational reproducibility,” and the terms are used interchangeably in this report.
 
 
 
-
-
-
-
-
-
-
-
-### What does reproducible research have to do with medicine?
-
+**Replicability** is obtaining consistent results across studies aimed at answering the same scientific question, each of which has obtained its own data.
 
 
 
@@ -54,9 +89,7 @@ Replicability is obtaining consistent results across studies aimed at answering 
 
 ### What are some bad things that can happen when we fail to focus on reproducibility?
 
-Vaccines cause autism (study de-bunked, but would not have even gotten that far if people could examine the code and such).
-
-
+Science is evidence-based by definition, and findings build on one another. Being able to reproduce the findings of other researchers is therefore nearly as important as contributing 'new' evidence. Researchers are fallable in their ability to write bug-free code, and by releasing code and data, these errors can be detected and corrected. Apart from this, reproducibiltiy and open-science sort of go hand-in-hand, in that code that is reproducible is also ideally open access, meaning that any researher has the ability to take the code and data and reproduce the analyses. We will go over many open science tools in this course (e.g., `R`). Some more examples of this given below. 
 
 
 
@@ -90,15 +123,48 @@ To get everyone on the same page, and to promote the use of open source software
 + R
 
 
+
+
+
+
+
 #### Windows
+
 Windows 10 should be able to run a Linux subsystem, which is necessary for getting at least one or two of the above working. 
 
 https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/
 
 
 
+
+
+
+
 #### Mac OS 
+
 Mac OS is basically a Linux ripoff, so it has the bash shell and everything needed. However, if you are not using Linux, I will not be able to help troubleshoot, and you will be on your own there. 
+
+
+
+
+
+
+
+
+
+
+
+
+### An important note for the brave:
+
+
+**I have 10 USB drives containing a persistent Ubuntu 18.04 operating system. This would be a nice way to familiarize yourself with a Linux environment without having to change anything on your computer. Please reach out if you want one. I ask that you return them after the semester is over, but honestly, it is yours if you promise to keep using it** 
+
+
+
+
+
+
 
 
 
@@ -115,6 +181,11 @@ Mac OS is basically a Linux ripoff, so it has the bash shell and everything need
 ## The tools you will learn
 
 The software listed above (i.e., bash shell, make, git, and R) can be used in concert to create reproducible workflows for analyses. 
+
+
+
+
+
 
 
 
@@ -144,7 +215,7 @@ Independent of operating system (portable and platform independent)
 
 Markdown is "future-proof" (plain text with some sprinkles, so it can be read by most any text editor)
 
-Can be used to make websites, presentations, email, documentation, and academic papers.
+Can be used to make websites, presentations, and academic papers.
 
 
 
@@ -289,7 +360,7 @@ Images can be embedded into markdown without the copy-paste approach of things l
 To embed an image, the syntax is simply
 
 ```
-![caption]{image}
+![caption](image)
 ```
 
 an example

@@ -6,6 +6,19 @@ output: pdf_document
 ---
 
 
+
+### Reading for this week:
+
+> Burton, A. W. (1991). Parallel processing in large-scale simulation: motivation and methods. Computing & Control Engineering Journal, 2(2), 74-79.
+
+
+
+
+
+
+
+
+
 ## What is parallel computing?
 
 Parallel computing is the act of using more than a single core of your processor. Most processors have multiple cores (4-core, 8-core, 16-core, etc.). When a process is run, it could occur sequentially (e.g., think of a for loop, going through each index of the loop and iterating forward). The idea of parallel processing is to distribute tasks and data to multiple cores in order to shorten the time it takes to run an analysis (or do the task). Conceptually, think of the for loop, but instead of doing things sequentially, each task is sent to a different CPU core. This type of task, where each task can be broken into a discrete unit, is often called "embarrassingly parallel". I have no idea why, but it is likely somehow linked to the dismissive and toxic culture that permeates tech. It does point to something though. Some tasks can be parallelized, and some cannot. Many tasks can be parallelized at different points, with huge implications to total time for the task. For instance, if you have a model that you would like to run with 1000 parameterizations, and each model is run 10 times, it is possible to parallelize at two different levels. We could parallelize the 1000 parameters, or we could parallelize the model running 10 times. We cannot parallelize both, because it does not work that like that. Thinking about where to parallelize will give you a better idea of what the computer is doing, and how to manage memory and resources.

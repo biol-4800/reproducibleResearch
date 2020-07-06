@@ -6,6 +6,14 @@ output: pdf_document
 ---
 
 
+### Reading for this week:
+
+> Baumer, B., Cetinkaya-Rundel, M., Bray, A., Loi, L., & Horton, N. J. (2014). R Markdown: Integrating a reproducible analysis tool into introductory statistics. arXiv preprint arXiv:1402.1894.
+
+
+
+
+
 
 
 ## R markdown

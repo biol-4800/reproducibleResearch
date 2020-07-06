@@ -5,8 +5,13 @@ output: pdf_document
 ---
 
 
-https://learn.r-journalism.com/en/publishing/workflow/r-projects/
-https://www.r-bloggers.com/%F0%9F%93%81-project-oriented-workflow/
+### Reading for this week:
+> Marwick, B., Boettiger, C., & Mullen, L. (2018). Packaging data analytical work reproducibly using R (and friends). The American Statistician, 72(1), 80-88.
+
+
+
+
+
 
 
 

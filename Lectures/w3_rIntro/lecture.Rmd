@@ -6,6 +6,15 @@ output:
     highlight: default
 ---
 
+### Reading for this week:
+> Ihaka, R. (1998). R: Past and future history. Computing Science and Statistics, 392396.
+
+
+
+
+
+
+
 
 ## What is R markdown?
 
