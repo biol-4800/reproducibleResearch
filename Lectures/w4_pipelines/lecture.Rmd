@@ -20,6 +20,7 @@ output: pdf_document
 
 The goal of this course is not only to teach `R` as a scientific programming language, but to help make your analyses _reproducible_ and _portable_. We defined _reproducibility_ as the ability to recreate an analysis and obtain the same output. Here, _portability_ means that the analyses should be _reproducible_ on any machine and any operating system (OS). As a step towards this, it is important to structure the analytical files in a way that they are entirely self-contained, and are clearly written so that anyone can take your code, run it, and reproduce the analyses. 
 
+
 There are a huge number of benefits to defining your project workflow or "analytical pipeline" as I refer to it. The biggest of these, in my opinion, is that the same template can be used for multiple projects, as your pipeline should be able to be carried over to a new project easily. It also allows collaborators to contribute to your code or manuscript files easily, since they will be able to see and understand the workflow. 
 
 
@@ -42,9 +43,11 @@ The basic way to write an R script is to have file ending in `.R` which contains
 We learned the basics of `R` coding previously, ending with how to write functions. Now we will go into a bit more detail as it pertains to your workflow, in that each function should be documented, such that it is portable across analyses and the input and output are clearly defined. We will start with a simple function structure
 
 ```{r}
+
 yourFunction <- function(arguments){
 
 	# doing stuff
+	ret <- NA
 
 	# returning stuff
 	return(ret)
@@ -63,8 +66,7 @@ R provides a standard way of documenting the objects in a package: you write .Rd
 
 
 
-Run devtools::document() 
-
+Run `devtools::document()`
 
 
 ```{r}
@@ -74,13 +76,14 @@ Run devtools::document()
 #' @param x a number 
 #' @param y a number
 #'
-#' @return
+#' @return sum of x and y
 #'
-#' @examples
+#' @examples 
+#'   addXY(5,10)
 #' @export
 
 addXY <- function(x,y){
-	sum(c(x,y))
+	return(sum(c(x,y)))
 }
 
 
@@ -90,18 +93,22 @@ addXY <- function(x,y){
 
 Structuring your functions as such will allow you to write clear code, but also to establish code that can be used across projects. For instance, I have written a simple `R` package containing functions I commonly use across projects. Calling in this package gives me access to all my common functions, which you will come to realize is a huge time-saver when you would otherwise be reinventing the wheel with each analysis. One important note here is to write functions in such a way that they can take general input. This means you should: 
 
+
 + **avoid hard-coding**: this refers to writing functions that will _only_ work with a specific data structure. For instance, explicitly using a column index in a function is bad practice, while including an argument to the function that allows flexible indexing is better
 
 
 ```{r}
+
 # bad
 getColumnMean <- function(mat){
 	mean(mat[,3])
 }
+
 # better
-getColumnMean <- function(mat, index){
+getColumnMean <- function(mat, index=3){
 	mean(mat[,index])
 }
+
 ```
 
 
@@ -111,12 +118,12 @@ getColumnMean <- function(mat, index){
 
 ```{r}
 # bad
-getColumnMean <- function(mat, index){
+getColumnMean <- function(mat, index=3){
 	mean(mat[,index])
 }
 
 # better
-getColumnMean <- function(mat, index){
+getColumnMean <- function(mat, index=3){
 	if(any(is.na(mat[,index]))){
 		warning('NA values present...ignoring them')
 	}
@@ -131,11 +138,14 @@ Here, we write a `warning` statement that tells the user that there is an NA val
 
 
 
+
+
 + **be flexible**: Flexibility comes at a cost, so first you will need to decide the scope with which you want the function to be flexible. However, it is good practice to strive for flexibility in your code. What if we did not simply want the first moment (the mean) of a column, but wanted to decide arbitrarily what action was taken on the column?
 
 ```{r}
+
 # bad
-getColumnMean <- function(mat, index){
+getColumnMean <- function(mat, index=3){
 	if(any(is.na(mat[,index]))){
 		warning('NA values present...ignoring them')
 	}
@@ -143,7 +153,7 @@ getColumnMean <- function(mat, index){
 }
 
 # better
-getColumnInfo <- function(mat, index, func=mean){
+getColumnInfo <- function(mat, index=3, func=mean){
 	if(any(is.na(mat[,index]))){
 		warning('NA values present...ignoring them')
 	}
@@ -158,7 +168,8 @@ Here, we provide a new argument `func`, which defaults to taking the `mean`, but
 
 
 
-> side hint: writing plotting functions is incredibly useful, and you can enhance flexibility of your plotting functions by making many arguments (for color, point size, etc.) but having them default to your liking. For instance, I like `pch=16, las=1` for xy plots. On top of this, you can use the `...` operator so you can include an arbitrary number of other arguments to the plotting function. An example below
+> side hint: writing plotting functions is incredibly useful, and you can enhance flexibility of your plotting functions by making many arguments (for color, point size, etc.) but having them default to your liking. For instance, I like `pch=16, las=1` for xy plots. On top of this, you can use the `...` operator so you can include an arbitrary number of other arguments to the plotting function. Note that we have not gone over visualization in `R` yet, as I wanted to first focus on  An example below:
+
 
 ```{r}
 
@@ -169,8 +180,10 @@ makePlot <- function(y,x, ...){
 ```
 
 ```{r}
+
 makePlot(y=runif(100), x=runif(100), 
 	pch=16, las=1, col='dodgerblue')
+
 ```
 
 
@@ -218,9 +231,12 @@ The license file contains the license under which you would like to develop and 
 There are a number of open source licenses. For the sake of this course, we will focus only on those in the Creative Commons (https://creativecommons.org/licenses/). The most liberal Creative Commons (CC for short) license is CC0, which waives all rights and places the work in the public domain (anyone can remix, reuse, profit, share, etc. your product). After this, there are variations that modify this open base. The first modification is concerning attribution. 
 
 
-**CC BY**: BY stands for "by attribution", meaning that you can use freely use, distribute, and profit from the product, but you have to acknowledge the source of the product. 
+**BY**: BY stands for "by attribution", meaning that you can use freely use, distribute, and profit from the product, but you have to acknowledge the source of the product. 
 
 The other licenses are variants on this license, as attribution is a fairly non-restrictive bar. The other restrictions include:
+
+
+
 
 + **SA**: Standing for "share-alike", this modification means that you can build on the existing work, and use it for profit, but you will have to adopt this same license. This is often referred to as a "parasitic" license, since it sort of requires that the person using the licensed product has to license their product in a certain way (i.e., they have to have a CC license). 
 
@@ -247,7 +263,7 @@ The .gitignore file is a plain text file that you contains paths to files you wi
 
 Data is typically a folder containing the assorted data used in the analyses. For the sake of this course, there are two types of data. 
 
-+ **Raw data**: These files are never changed. Treat them like they are protected files. Scripts that process raw data into the form used in the analyses are placed in the "Analysis" folder. 
++ **Raw data**: These files are never changed. Treat them like they are protected files. Scripts that process raw data into the form used in the analyses are placed in the "Analysis" folder. Raw data are not edited directly.
 
 + **Processed data**: These files are outputs from the initial pre-processing scripts. These files are what your analyses and plots will use. Treat them like they are wrong and may change. If it is not too time-intensive to re-process your raw data, do it on occasion to ensure that nothing changes in your processed data. 
 
@@ -262,7 +278,7 @@ Data is typically a folder containing the assorted data used in the analyses. Fo
 
 This folder contains your analytical scripts. For the sake of this class, we will assume that these are `R` or `R markdown` scripts. This code can output figures directly into this directory, or can create a "figures" directory and output there. However, it is best practice to not have your code create directories (easier to break). 
 
-It is incredibly important here to use relative paths. It is not uncommon when you see code that has calls like `read.csv('/home/user/myProject/Data/myData.csv')`. This is bad practice, because it assumes I have a home folder, a user folder, and the entire directory structure as the user did. For many, the path I used above will almost never be the case, as it is more typical in the linux OS. For Windows users, it would be something like 'C:\My Documents\Data.csv'. 
+It is incredibly important here to use relative paths. It is not uncommon when you see code that has calls like `read.csv('/home/user/myProject/Data/myData.csv')`. This is bad practice, because it assumes I have a home folder, a user folder, and the entire directory structure as the user did. For many, the path I used above will almost never be the case, as it is more typical in the linux OS. For Windows users, it would be something like 'C:/My Documents/Data.csv'. 
 
 
 > Another side 'best practice' point: file names should not have spaces. Spaces are evil, and should be avoided at all costs. 
@@ -292,6 +308,7 @@ Makefiles are incredibly useful, and fairly simple to write. We will not go into
 ```{r, eval=FALSE}
 
 TEXFILE = manuscript
+
 paper:
 	xelatex $(TEXFILE).tex
 	bibtex *.aux

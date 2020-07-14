@@ -39,6 +39,8 @@ It may be hard to mentally justify the switch from running something on a single
 
 
 
+
+
 ## Why is it useful?
 
 The time speed up is probably the most useful aspect of parallel computing. At some point in the future, given the increasing availability of data and complexity of models, you will likely encounter a task that you may need to parallelize, or a task that requires too much memory to run on your local machine. In the latter case, you may have access to a cluster, which is essentially a bunch of machines networked together with a decent amount of memory and processing power. But while the memory is available on these machines, you will also have to write the code to be parallelized. Single-core jobs are not really run on clusters, as the power of the cluster really comes from the ability to do many distributed tasks. 
@@ -59,7 +61,10 @@ So hopefully I have convinced you that parallel processing is a useful skill and
 Now we will make a cluster. Your local machine almost certainly has more than 1 core. Many phones have more than one core. When you hear things like "quad core CPU", this means that the processor (CPU) has 4 cores. To see how many cores you have access to on your machine, you can use the `detect.cores` function
 
 
+
+
 ```{r}
+
 parallel::detectCores()
 
 ```
@@ -72,7 +77,12 @@ So now we will construct a cluster of 2 nodes. This should hypothetically cut th
 
 
 ```{r}
+install.packages('parallel')
+library(parallel)
+```
 
+
+```{r}
 cl <- parallel::makeCluster(2)
 cl
 
@@ -92,7 +102,7 @@ system.time(
 
 
 system.time(
-	clusterApplyLB(cl, 1:5, function(x){
+	parallel::clusterApplyLB(cl, 1:5, function(x){
 		Sys.sleep(x)
 	})
 )
@@ -110,12 +120,13 @@ The first function, which is not parallelized, takes 15 seconds to run. This mak
 After we are done with a parallel process, we have to properly shut our cluster down. 
 
 
-```{r}
+```{r, eval=FALSE}
 
 parallel::stopCluster(cl)
 
 ```
 
+Above in the chunk options for this code block, I set `eval=FALSE` so that the `cl` object could still be used by processes below. 
 
 
 
@@ -128,7 +139,7 @@ Parallel code is subject to worry about reproducibility just as much as non-para
 
 ```{r}
 
-clusterApplyLB(cl, 1:5, 
+parallel::clusterApplyLB(cl, 1:5, 
 	function(x){
 		set.seed(x)
 		runif(x)
@@ -149,8 +160,9 @@ parms <- data.frame(index=1:5,
 	minRange=c(0,1,2,1,0),
 	maxRange=c(5,8,11,8,5))
 
+parallel::clusterExport(cl=cl, c('parms'))
 
-clusterApplyLB(cl, parms$index, 
+parallel::clusterApplyLB(cl, parms$index, 
 	function(x){
 		set.seed(parms$index)
 		runif(parms$numValues[x], 
@@ -163,52 +175,30 @@ clusterApplyLB(cl, parms$index,
 ```
 
 
-This errors out, saying that `parms` is not found. But we can use `ls()` and see that parms is in the workspace. This is a common issue. `parms` may be the workspace, but each individual core needs access to the `parms` data.frame, so being in the global workspace does not really matter. This is also true of `R` functions in other packages, so the use of the `require()` function in your code may be necessary to make sure `R` package functionality is accessible across all cores.
+This would error out, saying that `parms` is not found. But we can use `ls()` and see that parms is in the workspace. This is a common issue. `parms` may be the workspace, but each individual core needs access to the `parms` data.frame, so being in the global workspace does not really matter. This is also true of `R` functions in other packages, so the use of the `require()` function in your code may be necessary to make sure `R` package functionality is accessible across all cores. This is why we use the line: 
 
-
-
-
-```{r}
-
-parms <- data.frame(index=1:5, 
-	numValues=c(1,2,1,3,5),
-	minRange=c(0,1,2,1,0),
-	maxRange=c(5,8,11,8,5))
+```{r eval=FALSE
 
 parallel::clusterExport(cl=cl, c('parms'))
 
+```
 
-clusterApplyLB(cl, parms$index, 
-	function(x){
-		set.seed(parms$index)
-		runif(parms$numValues[x], 
-			min=parms$minRange[x],
-			max=parms$maxRange[x]
-		)
-	}
-)
+to make sure that the cluster has access to the data.frame `parms`. 
+
+
+
+
+
+
+No we have finished with the cluster `cl` and we can stop it using the `parallel::stopCluster` function. 
+
+```{r}
+
+parallel::stopCluster(cl)
 
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-((this is a bit short currently)) 
-
-
-ssh into lab machine and show running stuff on remote machines? Submitting jobs to cluster??
 
 
 

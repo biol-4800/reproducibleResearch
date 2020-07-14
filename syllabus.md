@@ -92,8 +92,8 @@ The final project will be performed in small groups for undergraduate students (
 | Item | Points | Total |
 | -- |  ---  | :---: |
 | Assignments | 5 x 50 | 250 |
-| Attendance/Participation | 50 | 50 |
-| Project | 150| 150 |
+| Attendance/Participation | 75 | 75 |
+| Project | 125| 125 |
 | Final exam | 50 | 50 |
 
 
@@ -110,30 +110,23 @@ There will be 5 assignments throughout the semester. _Each assignment will be wo
 
 **Attendance**: 
 
-Much of the material presented will not be available if you aren't in class to hear it. Given the pace of the course, and the computational and programming hurdles you will almost certainly encounter, you should come to class. If you do not, you will likely fail. Attendance and participation will be worth 50 points. 
+Much of the material presented will not be available if you aren't in class to hear it. Given the pace of the course, and the computational and programming hurdles you will almost certainly encounter, you should come to class. If you do not, you will likely fail. Part of the class will be discussing relevant papers. If you do not participate in paper discussions, clearly demonstrating that you have read and understand the nuances of the work, this will affect your grade. Attendance and participation will be worth 75 points. 
 
 
 
 
 **Project**: 
 
-The project will be a group exercise to demonstrate your learning and allow you to use the new tools you have acquired in the course. 
+The project will be a demonstration of your learning and allow you to use the new tools you have acquired in the course. 
+
+The final project will be an R markdown document that reads in and analyzes a data source. I can provide data, if necessary, but would prefer if data came from the student (either from their research or on something they are passionate about). 
+
+You will actively develop your work on Github, structuring your directory as we discussed in class. The final product will be an R markdown file that is entirely reproducible. This means I will clone your directory, and run your files on my local machine. **I must be able to reproduce your analyses**.
+
+More information on the final project and its components are provided at the bottom of this document. The three core parts are 1) the proposal, 2) the implementation, and 3) the presentation
 
 
-The final project will be an R markdown document that reads in and analyzes a data source. I will provide groups with data, or they can find them from another source.
-
-
-Your group will work collaboratively on Github, structuring your directory as we discussed in class. The final product will be an R markdown file that is entirely reproducible. This means I will clone your directory, and run your files on my local machine. **I must be able to reproduce your analyses**.
-
-
-Additionally, your projects will have to incorporate at least 2 of the following elements:
-
-+ continuous integration (travisCI is your friend)
-+ a makefile (that will compile and clean the project directory)
-+ a license file
-+ visualizations (reproducible plots within the R markdown file)
-
-_The project is worth 150 points_
+_The project is worth 125 points_
 
 
 
@@ -200,16 +193,18 @@ More information on registering a disability is available at [LSU Disability Ser
 | 8  | R markdown and LaTeX | -- | 
 | 9  | Dependency hell and containerization | -- |
 | 10 | Parallel computing | --  |
-| 11 | Final projects 1  | --  |
-| 12 | Final projects 2  | -- |
+| 11 | Final project work   | --  |
+| 12 | Short presentations on final projects  | -- |
+
 
 
 
 Things not covered, but maybe can be covered given student interest:
 
 + creating an R package
-+ code benchmarking
++ code benchmarking (we cover line profiling but not benchmarking)
 + handling spatial data 
++ 
 
 
 
@@ -221,65 +216,103 @@ Things not covered, but maybe can be covered given student interest:
 
 
 
-
-
-
-## For graduate students
-
-
-This course presents you with an opportunity to learn essential skills for the analysis of data. In addition to the assignments and requirements of the undergraduates, you will complete a reproducible analysis of data that you bring in to the course (if you don't have any data to bring, I can provide you with some). 
-
-Undergraduates will perform a similar activity as groups of students. You will perform this as individuals. Bring your dissertation data, or an idea for a side project. I expect the final output to be in the form of a manuscript, formatted into the following sections.
-
-
-
-### Introduction
-
-What question are you addressing with the data?
-
-What have other scientists done before?
-
-Where is the knowledge gap (i.e., what are you contributing)?
-
-
-
-### Methods
-
-Tell me about the data.
-
-Tell me all the detail to where I can recreate the analysis you performed.
-
-
-### Results
-
-What did you find? Reference relevant figures and statistical analyses.
-
-
-
-### Discussion
-
-What have we learned that we didn't know before?
-
-How does this change the current state of knowledge?
-
-What are caveats/exceptions/next steps?
-
-
 ---
 
+# Final project
 
-The best part is that the entire analysis and manuscript need to be end-to-end reproducible. This means that I will expect not only a well-written and clear manuscript, but also documentation to easily reproduce all analyses, figures, and compile manuscript text. 
 
-Your projects will have to incorporate all of the following elements:
+The final project will consist of 3 parts. First, you will develop a project proposal. Second, you will do the proposed project, and the final product will be a versioned and end-to-end reproducible analytical workflow that could potentially lead to a peer-reviewed publication. Lastly, you will briefly present your work to the class. 
 
-+ continuous integration (travisCI is your friend)
-+ a makefile (that will compile and clean the project directory)
-+ a license file
-+ a clear project directory (with subfolders and README files)
+
+This means that I will expect not only a well-written and clear manuscript, but also documentation to easily reproduce all analyses, figures, and compile manuscript text. Some things I would like to see incorporated into the final projects:
+
++ a clear README and informative file structure
++ continuous integration or a Dockerfile
++ a LICENSE file
 + visualizations (reproducible plots within the R markdown file)
 + version control (everything on Github, with clear commit history)
 + R and R markdown
 + no proprietary software or format (if you turn in a .docx file, I will be quite sad)
+
+
+
+
+## Final project proposal
+
+Please prepare a short proposal on your final project idea by September 17. The proposal should include:
+
+- Title & description of the project
+- Team members names
+- A description of the data required, and how it will be obtained (e.g. URL/DOI to data source)
+- 3 questions / analysis tasks you will perform on the data; in the spirit of the assignments we have been doing.
+
+
+Please create your proposal in a markdown file called `proposal.md` in the root directory of the final project repo.
+
+
+
+
+
+
+## Project Guidelines
+
+### Project questions must illustrate all of the following tasks:
+
+- Some form of data access / reading into R
+- Data manipulation 
+- Data visualization
+- Use of GitHub
+- Reproducible execution with use of Travis and/or Docker
+- RMarkdown writeup, with final submission as a nicely formatted PDF document that includes code and results.
+- Overall clean and clear presentation of repository, code, and explanations.
+
+
+### and many of the following skills
+
+- Writing / working with custom R functions
+- Creating an R package for functions used in the analysis
+- Interaction with an API
+- Use of regular expressions
+- Use of an external relational database
+- Preparing processed data for archiving / publication
+- Parsing extensible data formats (JSON, XML)
+- Making layout and presentation into secondary output (e.g. .pdf, website) - useful for final presentation
+
+
+
+
+
+
+
+
+
+
+# Final Rubric 125 pts total
+
+### proposal
+- 25pts Proposal, turned in on time and with team member names, background, dataset, and outline of questions
+
+
+### implementation
+- 25pts Polished github repository, including:
+  -  10pt: project runs on any machine (through Travis-CI and/or Docker file)
+  -  10pt: clean and well formatted repo (clear README file and file structure)
+  -  5pt: clear commit messages in project repo
+
+- 50 pts Project Substance: Objectives, Code, Visualization.
+  - 10pt: project is correct scope, addresses the question, and has tangible output. 
+  - 10pt: Visualizations and tables compliment the overall findings. 
+  - 10pt: References are included. 
+  - 10pt: The final document is in a format that can be reproduced and is versionable. 
+  - 10pt: Code is clear, well-documented, and reproducible
+
+
+### presentation
+- 25pts Final presentation
+  - 10pt: clarity of presentation
+  - 10pt: presentation is engaging, structured well, and highlights project findings and reproducibility
+  - 5pt: style
+
 
 
 

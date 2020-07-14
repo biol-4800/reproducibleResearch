@@ -109,11 +109,11 @@ It can take on a few different forms that -- if and when you encounter them -- w
 
 
 
-Claes et al. 2014 found that "occurrence of errors in CRAN packages over a period of three months ... resulted mostly from updates in the packages’ dependencies ..."
+Claes et al. 2014 found that "occurrence of errors in CRAN packages over a period of three months ... resulted mostly from updates in the packages' dependencies ..."
 
 
 
-> Claes, M., Mens, T., & Grosjean, P. (2014). On the maintainability of CRAN packages. 2014 Software Evolution Week - IEEE Conference on Software Maintenance, Reengineering, and Reverse Engineering (CSMR-WCRE). https://doi.org/10.1109/csmr-wcre.2014.6747183
+> Claes, M., Mens, T., and Grosjean, P. (2014). On the maintainability of CRAN packages. 2014 Software Evolution Week - IEEE Conference on Software Maintenance, Reengineering, and Reverse Engineering (CSMR-WCRE). https://doi.org/10.1109/csmr-wcre.2014.6747183
 
 
 
@@ -219,14 +219,106 @@ Docker images are a slightly more simple approach to virtualization, in that the
 
 
 
+**Docker**
+
+First things, first. Install `Docker` on your machine.
 
 
-((do I give a quick Docker tutorial here, or is that beyond the scope of what I should do?))
+Docker has some associated language around it which can be confusing. A DockerFile is a text file which contains the instructions on how to build the subsequent DockerImage. These images can be stored on places like Docker Hub (https://hub.docker.com/). This is like Github but only for Docker Images. These DockerImages can be run as DockerContainers, which are the realizations of all the setup, allowing you access to different operating environments on your local machine, and ensuring that your code can be run on any machine that has Docker installed. 
+
+
+
+```{bash, eval=FALSE}
+
+sudo docker pull r-base:latest
+
+```
+
+
+
+```{bash, eval=FALSE}
+
+sudo docker images
+
+```
+
+The output of this on my machine looks like this: 
+
+```{bash, eval=FALSE}
+REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
+r-base                        latest              53c050954e1f        3 weeks ago         783MB
+julia                         latest              183ba11b1cb8        3 years ago         368MB
+selenium/standalone-firefox   2.53.0              0067b27644ee        3 years ago         599MB
+hello-world                   latest              690ed74de00f        4 years ago         960B
+```
+
+Each of the images can be run to form a container. If the container is interactive, we have an environment where commands can be issued that allow access to programs and such potentially independent of our computer operating system and structure. For instance, a computer without `R` installed could still run `R`. 
+
+
+```{bash, eval=FALSE}
+
+sudo docker run -ti --rm r-base
+
+```
+
+Outputs
+
+```{bash, eval=FALSE}
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+
+```
+
+
+This puts us into an `R` environment of a more recent version of `R` than what I have installed locally (which is my bad for not upgrading my `R` instance). None of the `R` packages I have installed on my local machine are accessible by this container, such that I have to install all the packages and versions to use in a given analysis. This also allows us to use older versions of software. For instance, based on the table above, I have a Docker image of julia (another statistical programming language) from 3 years ago, corresponding to version 0.5.0. The current version of julia at the time of writing these notes was version 1.4.2. 
 
 
 
 
 
+We can list running containers using the `docker ps` command (which should return no containers since we shut down the container above, treating it as interactive). 
+
+```{bash, eval=FALSE}
+
+sudo docker ps
+
+```
+
+
+
+
+```{bash, eval=FALSE}
+
+# stop the container
+docker container stop  
+
+# remove container
+docker container rm 
+
+#remove entire image
+docker container rmi r-base
+
+# remove all stopped containers
+docker container prune
+
+```
 
 
 

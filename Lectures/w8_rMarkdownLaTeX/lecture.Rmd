@@ -35,6 +35,8 @@ R markdown documents can be compiled to create documents, analyses, research art
 
 
 
+
+
 ### How does R markdown do these things? 
 
 By standing on top of the shoulders of LaTeX and pandoc for the most part. 
@@ -66,7 +68,7 @@ _This interface between R Markdown and LaTeX is important_
 
 ### Header
 
-```{yaml, eval=FALSE}
+```{bash, eval=FALSE}
 
 ---
 title: "Your title"
@@ -92,7 +94,7 @@ R Markdown makes a lot of decisions for you, using a basic template which sets s
 
 There are at least two spots where you can alter base formatting. First, in the yaml header of the R markdown document itself.
 
-```{r, eval=FALSE}
+```{bash, eval=FALSE}
 ---
 output: 
   pdf_document:
@@ -139,7 +141,7 @@ output:
 where the `preamble.tex` file may look something like
 
 
-```{r, eval=FALSE}
+```{bash eval=FALSE}
 
 \usepackage{geometry}
 \geometry{a4paper}
@@ -198,13 +200,16 @@ Citations in R markdown are fairly straightforward [@dallas2020]
 ```
 
 
+
 This specific format can be output from Google Scholar (the small quote symbol below each article, followed by clicking the "BibTeX" hyperlink). Each formatted citation in the `.bib` file has the same structure. For example, The citation above (@dallas2020) refers to the `.bib` entry below.
 
-```{r eval=FALSE}
 
-@article{dallas2020spatial,
+```{bash eval=FALSE}
+
+@article{dallas2020,
   title={Spatial synchrony is related to environmental change in Finnish moth communities},
-  author={Dallas, Tad A and Ant{\~a}o, Laura H and P{\"o}yry, Juha and Leinonen, Reima and Ovaskainen, Otso},
+  author={Dallas, Tad A and Ant{\~a}o, Laura H and P{\"o}yry, 
+		Juha and Leinonen, Reima and Ovaskainen, Otso},
   journal={Proceedings of the Royal Society B},
   volume={287},
   number={1927},
@@ -233,7 +238,10 @@ This specific format can be output from Google Scholar (the small quote symbol b
 
 ```{r, eval=TRUE, echo=TRUE}
 
-tab <- data.frame(Variable=c('temperature', 'precipitation', 'ice cream'), t=c(0.01, 2.05, -1.49), p = c(0.01, 0.25, 0.86))
+tab <- data.frame(
+	Variable=c('temperature', 'precipitation', 'ice cream'), 
+	t=c(0.01, 2.05, -1.49), 
+	p = c(0.01, 0.25, 0.86))
 knitr::kable(tab)
 
 ```
@@ -248,10 +256,12 @@ knitr::kable(tab)
 
 
 
+
+
 It is also possible to use `xtable` for formatting tables in LaTeX format instead of markdown syntax.
 
 
-```{r}
+```{r, result='asis'}
 
 xtable::xtable(tab)
 
@@ -352,7 +362,7 @@ file.copy(system.file("rmd/latex/default-1.17.0.2.tex",
 
 
 
-```{r eval=FALSE}
+```{bash eval=FALSE}
 
 ---
 title: "Title"

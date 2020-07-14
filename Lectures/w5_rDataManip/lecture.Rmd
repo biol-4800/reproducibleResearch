@@ -116,9 +116,9 @@ To refresh your memory and clarify the use of conditionals, the list below provi
 
 + <, <=: is smaller than, is smaller than or equal to
 
-+  >, >=: is bigger than, is bigger than or equal to
++ `>`, >=: is bigger than, is bigger than or equal to
 
-+  !=: not equal to
++ !=: not equal to
 
 
 And some that we did not go into before, but will go into a bit more detail on now:
@@ -260,6 +260,7 @@ install.packages('dplyr')
 
 library(plyr)
 library(dplyr)
+
 ```
 
 
@@ -289,7 +290,7 @@ We can use `plyr` functionality to operate on this array and return different fo
 
 ```{r}
 
-aaply(my.array, 1, sum) 
+plyr::aaply(my.array, 1, sum) 
 
 ```
 
@@ -298,9 +299,9 @@ We can change one letter and now return a data.frame containing two columns. Thi
 
 ```{r}
 
-adply(.data=my.array, .margins=1, .fun=sum) 
-adply(.data=my.array, .margins=2, .fun=sum) 
-adply(.data=my.array, .margins=3, .fun=sum) 
+plyr::adply(.data=my.array, .margins=1, .fun=sum) 
+plyr::adply(.data=my.array, .margins=2, .fun=sum) 
+plyr::adply(.data=my.array, .margins=3, .fun=sum) 
 
 ```
 
@@ -310,7 +311,7 @@ Finally, we can return a list object. In this use case, this is not super helpfu
 
 ```{r}
 
-alply(.data=my.array, .margins=1, .fun=sum) 
+plyr::alply(.data=my.array, .margins=1, .fun=sum) 
 
 ```
 
@@ -530,7 +531,7 @@ tmp3 <- dat %>%
 
 The results of these two are identical (`all(tmp3==tmp2)` returns TRUE).
 
-This is useful, as commands can be chained together, including the creation of new variables, subsetting and summarising of existing variables, etc. One thing to keep in mind is to check intermediate results -- instead of just piping all the way through -- as data manipulation errors can be introduced mid-statement and go unnoticed. 
+This is useful, as commands can be chained together, including the creation of new variables, subsetting and summarising of existing variables, etc. One thing to keep in mind is to check intermediate results -- instead of just piping all the way through -- as data manipulation errors can be introduced mid-statement and go unnoticed. That is, in some situations, piping does not help reproducibility. Many proponents argue that it helps with code readability, while many others say that actively makes code less human readable. It definitely does require adopting a certain syntax and the assumption that every end user is on the `tidyverse` train, which is not ideal when reproducibility involves everyone, not just the cool tidy/Hadley/RStudio crowd.
 
 
 

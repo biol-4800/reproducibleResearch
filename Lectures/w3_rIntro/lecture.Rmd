@@ -31,7 +31,7 @@ Now we see that it highlighted the syntax based on R syntax (the one becomes blu
 
 ## Why does this matter?
 
-This matters because now we have a way to embed text and executable code into a single document. For isntance, I have been collecting data every year on the number of emails I receive. I want to be able to hand a single document and the data over to someone and have them see my text explanation, my analytical code, and the output. This can be done easily in R markdown. 
+This matters because now we have a way to embed text and executable code into a single document. For instance, I have been collecting data every year on the number of emails I receive. I want to be able to hand a single document and the data over to someone and have them see my text explanation, my analytical code, and the output. This can be done easily in R markdown. 
 
 
 Also, consider that I continue collecting data. The analysis which is run every time the R markdown is compiled can handle dynamic data. This means that the pipeline is already there whenever I add more data to the data file, such that I can easily run the analyses and see what changes. 
@@ -71,7 +71,7 @@ Open the R markdown (Rmd) file in RStudio. On the taskbar, there should be a bal
 The command line is your friend. Long after RStudio has faded into oblivion, the command line will exist. You've been introduced to the command line already in previous lectures. We can run R from the command line. Simply open up your terminal window (program called `terminal` in Ubuntu or right-click and select "Open in terminal" from menu)
 
 
-```{sh, eval=FALSE}
+```{bash, eval=FALSE}
 R
 ```
 
@@ -103,29 +103,7 @@ Alright. So now we know R markdown syntax, and we have R and RStudio installed. 
 
 ## What is R and why should I use it?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+R is a statistical programming language that has quickly become the standard language for ecologists, and to some extent, biologists. This does not mean that you have to use it. I hope that many of the skills you learn in this course in terms of how to program are transferable across languages. 
 
 
 
@@ -136,7 +114,7 @@ Alright. So now we know R markdown syntax, and we have R and RStudio installed. 
 Variables are defined as objects in `R` that can take on different attributes. For instance, data you work with could come in the form of `numeric` variables, such as heights, weights, etc. `R` has many different variable types, all of which are defined by their class. A variable `class` defines the attributes of an object, and are generally grouped into 3 different types (S3, S4, and RC). Most of the data you will work with will be S3 or S4, but RC class is the most aligned with `object-oriented programming`. We will focus on base types in this class. Specifically, we will work with four general types of variables: `numeric`, `character`, `factor`, and `logical`. We will use this generic types to build up to "higher order" class structures. For instance, you can define vectors of different lengths which correspond to the 4 different types.
 
 ```{r}
-num <- c(1:4)
+num <- c(1,2,3,4)
 char <- LETTERS[1:4]
 fact <- as.factor(c('a', 'a', 'b', 'd'))
 logc <- c(TRUE, FALSE, TRUE, TRUE)
@@ -149,6 +127,7 @@ We can examine the properties of these vectors by using base `R` functions
 
 is.numeric(num)
 is.factor(num)
+
 is.factor(fact)
 is.logical(fact)
 
@@ -190,7 +169,7 @@ class(test2[,1])
 ```
 
 
-So matrices may not be as useful as other data structures. The data structures we have covered until now are vectors (defined using the `c()` function) and data.frames (defined using the `data.frame()` function). Another useful way of storing data of different length or structure is in a `list`. 
+So matrices may not be as useful as other data structures, as matrices require that all values in the array be of the same type. The data structures we have covered until now are vectors (defined using the `c()` function) and data.frames (defined using the `data.frame()` function). Another useful way of storing data of different length or structure is in a `list`. 
 
 ```{r}
 
@@ -278,7 +257,7 @@ testList[1]
 
 ```
 
-This approach fails when we consider something with more than one dimension. For instance, our data.frame `test`. We index data.frames by specifying the dimension. Rows and columns are specified by seperating the indexing with a comma. So if we want to see the first row of `test`
+This approach fails when we consider something with more than one dimension. For instance, our data.frame `test`. We index data.frames by specifying the dimension. Rows and columns are specified by separating the indexing with a comma. So if we want to see the first row of `test`
 
 ```{r}
 test[1,]
@@ -311,6 +290,7 @@ test$num
 ```
 
 The dollar sign notation is used in data.frames and lists (because they are essentially the same thing). So the dollar sign allows you to access columns of a data.frame or elements of a list. We explore this a bit below. 
+
 
 ```{r}
 names(testList)
@@ -422,7 +402,7 @@ levels(test[,3])
 
 
 
-### Conditonals
+### Conditionals
 
 Conditionals are extremely helpful in programming. Conditionals are things that output as `logical` (boolean; TRUE or FALSE), that can then be used to define which action is performed next, or used to index specific entries of a variable. We will first cover functions that output as logical, comparing two values, then build up to functions which allow indexing and actions. 
 
@@ -515,7 +495,7 @@ But this is cumbersome, and it only works if the `any` or `all` statements do wh
 
 ```{r}
 
-if(any(brody == animals)){
+if(any(brody == animals, na.rm=TRUE)){
 	print('brody is an animal')
 }else{
 	print('brody is not an animal')
@@ -582,8 +562,9 @@ It may be important to note that it is also possible to loop over the instances 
 
 ```{r}
 
+out <- c()
 for(i in testList2){
-	print(mean(i))
+	out <- c(out, mean(i))
 }
 
 ```
@@ -617,11 +598,14 @@ Now that we have an idea of what the `apply` family of functions do, we can look
 
 testDF <- data.frame(a=runif(100), b=rpois(100,2), d=rbinom(100,1,0.5))
 
+
 # over columns
 ret <- c()
 for(i in 1:ncol(testDF)){
 	ret[i] <- mean(testDF[,i])
 }
+
+
 # over rows
 ret <- c()
 for(i in 1:nrow(testDF)){
@@ -685,7 +669,9 @@ Here, we write a function where we give it two arguments (`lst` and `func`) corr
 
 Documentation is extremely important for reproducible research. Code that you write now should be readable to you 5 years from now. To make this happen, it is imperative that code is documented well. This includes documenting the analytical workflow, providing a proper README file alongside your code, and documenting all functions. One useful syntax for documenting functions is that used by the `devtools` and `roxygen2` packages to create `R` package documentation. 
 
+
 ```{r}
+
 #' Title of the function
 #'
 #' @param lst a list object

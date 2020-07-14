@@ -1,5 +1,5 @@
 ---
-title: "Writing non-garbage code"
+title: "Code style, line profiling, and unit testing"
 author: Tad Dallas
 date: 
 output: pdf_document
@@ -26,6 +26,14 @@ Code style may seem like something to not worry about, but by being a bit strict
 There are many existing packages which help you follow good coding principles. I will recommend none of them. This is not because they are not useful, but this course is on _reproducible research_ and one way to enhance reproducibility is to limit dependencies. That being said, RStudio has some built-in code formatting tools, which I will also not touch on, for much of the same reason. 
 
 
+
+
+
+
+
+
+
+
 ### Naming
 
 Naming is going to be a big deal here, because we name everything. We name `R` scripts (e.g., 'myAnalysis.R'), variables (`myVariable`), and our functions (`myFunction`). 
@@ -50,6 +58,8 @@ Do not use uninformative names (e.g., `var`, `df`, etc.)
 
 
 
+
+
 ### Spacing
 
 I like languages that are agnostic to spacing (LaTeX) over languages that are super sensitive (yaml). `R` is nice in that spacing is more stylistic, so the code will not error-out...it will just be ugly. 
@@ -59,6 +69,12 @@ Do not put spaces around : or :: calls (1:10)
 Put spaces after commas (plot(x, y, xlab=''))
 
 The main objective of spacing is to make code readable, a common theme of all style guides (http://google.github.io/styleguide/). 
+
+
+
+
+
+
 
 
 
@@ -85,6 +101,7 @@ if(brody == 'cat'){
 }
 
 ```
+
 
 
 Some will tell you to not use tab characters and instead use spaces. This is best practice, but I like tabs. The downside is that tabs mean something different on different machines, so that some person who has tabs representing 8 spaces is going to be find your code difficult to read if you use tabs. 
@@ -216,6 +233,8 @@ Rprof(NULL)
 
 
 
+
+
 `Rprof` should give you a general idea about which parts of your code are time- or computation- intensive. To dive more into memory usage of single objects in the interactive `R` session, you can use the `object.size()` function. 
 
 
@@ -229,13 +248,16 @@ object.size(a2)
 ```
 
 
+
+
+
 We can also see how the memory needed to store an object changes when the object changes. 
 
 ```{r}
 
 a <- list()
-for(i in 1:100){
-	a[[i]] <- runif(1000)
+for(i in 1:10){
+	a[[i]] <- runif(10000)
 	print(object.size(a))
 }
 
@@ -313,8 +335,16 @@ isRed <- function(obj){
 
 
 ```{r}
-
 isRed('my pencil')
+
+```
+
+The following code errors out, producing the error 
+
+> `obj is numeric, not a string.`
+
+```{r, eval=FALSE}
+
 isRed(1)
 
 ```
@@ -353,13 +383,13 @@ The way the `testthat` package recommends organizing tests is to have a `tests` 
 
 ```{r}
 
-context("your analysis")
+testthat::context("your analysis")
 
-test_that("isRed function does stuff", {
+testthat::test_that("isRed function does stuff", {
 
-	expect_output(isRed('orange'), 'maybe?')
-	expect_type(isRed('clown nose'), 'character')
-	expect_equal(length(isRed('orange')), 1)
+	testthat::expect_output(isRed('orange'), 'maybe?')
+	testthat::expect_type(isRed('clown nose'), 'character')
+	testthat::expect_equal(length(isRed('orange')), 1)
 })
 
 ```
@@ -367,11 +397,18 @@ test_that("isRed function does stuff", {
 
 We see three things. First, we define a `context` which allows the grouping of multiple tests. Then we define the test (`test_that`) which wraps all the `expectations` inside a single function. If tests are met, there is no output. We can see this by breaking the test condition.
 
-```{r}
+```{r eval=FALSE}
 
 testthat::expect_type(isRed('clown nose'), 'numeric')
 
 ```
+
+Which errors out with the error 
+
+> Error: isRed("clown nose") has type `character`, not `numeric`.
+
+
+
 
 By issuing `testthat::test_dir()`, we can run all the tests contained in a given directory
 
@@ -379,7 +416,7 @@ By issuing `testthat::test_dir()`, we can run all the tests contained in a given
 
 #### Other useful testing functions
 
-```{r}
+```{r eval=FALSE}
 expect_null()
 expect_true()
 expect_success()
