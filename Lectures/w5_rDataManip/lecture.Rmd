@@ -7,7 +7,7 @@ output: pdf_document
 
 ### Reading for this week:
 
-> https://paldhous.github.io/ucb/2016/dataviz/week7.html
+> Wickham, H. 2017  "R for Data Science" Chapter 12, "Tidy Data". https://r4ds.had.co.nz/tidy-data.html
 
 
 
@@ -64,16 +64,18 @@ str(dat)
 We can use what we learned before in terms of base `R` functions to calculate summary statistics. 
 
 ```{r}
+
 # mean life expectancy
 mean(dat$lifeExp)
 
 ```
 
+
 But what does mean life expectancy really tell us, when we also have information on space (`country`) and time (`year`)? So we may wish to subset the data to a specific country or time period. We can do this using `which` statements.
 
 ```{r, eval=FALSE, echo=TRUE}
 
-dat[which(dat$country=='Afghanistan'), ]
+dat[which(dat$country == 'Afghanistan'), ]
 dat[which(dat$year < 1960), ]
 
 ```
@@ -110,6 +112,8 @@ dat[which(dat$year < 1960), c("lifeExp","gdpPercap")]
 
 
 
+
+
 To refresh your memory and clarify the use of conditionals, the list below provides a bit more information.
 
 + ==: equals exactly
@@ -142,9 +146,19 @@ The NOT operator is super useful, as it is always better to index existing cases
 dat[!is.na(dat$lifeExp),]
 dat[-is.na(dat$lifeExp),]
 
+
+# nope.
+all(dat[!is.na(dat$lifeExp),] == dat[-is.na(dat$lifeExp),])
+
 ```
 
+
+
 These two are essentially the same statement, so why do they display such different results?
+
+
+
+
 
 
 
@@ -166,6 +180,7 @@ Finally, the %in% operator is super useful when you want to subset data based on
 
 #fails
 dat[which(dat$country == c('Afghanistan', 'Turkey')), ]
+
 #does not fail
 dat[which(dat$country %in% c('Afghanistan', 'Turkey')), ]
 
@@ -180,9 +195,12 @@ dat[match(c('Afghanistan', 'Turkey'), dat$country),]
 
 ```
 
+
 only returns two rows, because it only matches the first instance of both countries in the data. We can use match to get the index associated with a single value (useful when writing functions).
 
+
 ```{r}
+
 match('dog', c('dog', 'cat', 'snake'))
 
 #not ideal behavior
@@ -191,7 +209,6 @@ match('dog', c('dog', 'cat', 'snake', 'dog'))
 ```
 
 or it can be used to identify multiple instances of a single value across a vector of values.
-
 
 ```{r}
 match(c('dog', 'cat', 'snake', 'dog'), 'dog')
@@ -204,28 +221,16 @@ While a bit opaque, these functions are pretty useful in a variety of situations
 `do.call` is a way of calling the same function recursively on multiple objects, and may have similar output to `Reduce`, which is also a way to recursively apply a function. 
 
 
-
-
-
 ```{r}
-lst <- list(1:10)
+
+lst <- list(1:10, 1:10, 1:10, 1:10, 1:10)
 lst
 
 #this makes a single rbind call with each element of the list as an argument
-do.call(rbind, lst)
+str(do.call(rbind, lst))
 
 #this does it iteratively (so makes n-1 rbind calls)
 Reduce(rbind, lst)
-
-
-
-
-
-
-# Reduce isn't specifically designed to work on list objects, while do.call is
-do.call(sum, lst)
-Reduce(sum, lst)
-Reduce(sum, unlist(lst))
 
 ```
 
@@ -254,7 +259,8 @@ The general goal of the `tidyverse` is to create a set of interconnected package
 
 There are many `R` libraries designed to manipulate data and work with specific data structures (e.g., `purrr` for list objects, `lubridate` for dates, etc.). For the sake of brevity and generality, we will examine two main useful packages for data manipulation: `plyr` and `dplyr`. These are two of the near-original `tidyverse` packages developed by Hadley Wickham. They are solid. We will also use many base `R` functions for data manipulation. 
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, eval=TRUE, echo=TRUE}
+
 install.packages('plyr')
 install.packages('dplyr')
 
@@ -275,11 +281,12 @@ Below, I provide an example of the aXply syntax (e.g., adply, alply, aaply).
 
 ```{r}
 
-my.array = array(1:27, c(3,3,3))
-rownames(my.array) = c("Curly", "Larry", "Moe")
-colnames(my.array) = c("Groucho", "Harpo", "Zeppo")
-dimnames(my.array)[[3]] = c("Bart", "Lisa", "Maggie")
-my.array
+arr <- array(1:27, c(3,3,3))
+rownames(arr) = c("Curly", "Larry", "Moe")
+colnames(arr) = c("Groucho", "Harpo", "Zeppo")
+dimnames(arr)[[3]] = c("Bart", "Lisa", "Maggie")
+
+arr
 
 ```
 
@@ -288,9 +295,10 @@ Arrays are something that we did not introduce when we talked about `R` basics, 
 
 We can use `plyr` functionality to operate on this array and return different forms. For instance, `aaply` takes an array and returns a simplified array (here a vector).
 
+
 ```{r}
 
-plyr::aaply(my.array, 1, sum) 
+plyr::aaply(arr, 1, sum) 
 
 ```
 
@@ -299,9 +307,9 @@ We can change one letter and now return a data.frame containing two columns. Thi
 
 ```{r}
 
-plyr::adply(.data=my.array, .margins=1, .fun=sum) 
-plyr::adply(.data=my.array, .margins=2, .fun=sum) 
-plyr::adply(.data=my.array, .margins=3, .fun=sum) 
+plyr::adply(.data=arr, .margins=1, .fun=sum) 
+plyr::adply(.data=arr, .margins=2, .fun=sum) 
+plyr::adply(.data=arr, .margins=3, .fun=sum) 
 
 ```
 
@@ -311,7 +319,7 @@ Finally, we can return a list object. In this use case, this is not super helpfu
 
 ```{r}
 
-plyr::alply(.data=my.array, .margins=1, .fun=sum) 
+plyr::alply(.data=arr, .margins=1, .fun=sum) 
 
 ```
 
@@ -321,7 +329,12 @@ plyr::alply(.data=my.array, .margins=1, .fun=sum)
 A pitch for `plyr::ldply`. I really like this function, as I often find myself with lists of similar structures that I want to operate on and get a single clean object back. I will not go into an example, but this is a pretty useful function (though all the utility is basically contained in `vapply`). 
 
 
+
 Finally, you may wonder why am I pushing apply statements so hard. It has nothing to do with speed, and only a bit to do with code clarity. The main advantage is understanding the programmatic nature of apply statements (which will be similar but less chronological than a for loop), and many parallel computing packages have their own little versions of apply statements ready to go (e.g., `parallel::mclapply`, `parallel::parLapply`, `parallel::clusterApplyLB`).
+
+
+
+
 
 
 
@@ -364,7 +377,6 @@ The nice part about `dplyr::rename()` is that we specify the old and new column 
 
 Many of the next functions are directly analogs of functions from another programming language used to query databases (SQL). This makes it really nice to learn, as you can essentially learn two languages while learning one. SQL is pretty powerful when working with relational data. I will not go into what I mean by this, unless there is time during lecture and interest among you all.
 
-
 We use `dplyr::select` when we want to...select...columns. 
 
 ```{r, eval=FALSE, echo=TRUE}
@@ -395,7 +407,10 @@ dplyr::filter(df2, a < 0.5)
 
 
 
+
+
 ### mutate
+
 
 `dplyr::mutate` is used when we wish to create a new covariate based on our existing covariates. For instance, if we wanted to create a column `e` on `df2` that was the sum of `a+b` divided by `d`...
 
@@ -434,6 +449,12 @@ datG <- dplyr::group_by(dat, country)
 ```
 
 This is a bit like a non-function, since `dat` and `datG` are essentially the same....but they are not for the purposes of computing group-wise statistics. This is done using the `dplyr::summarise` function.
+
+
+
+
+
+
 
 
 ### summarise
@@ -479,8 +500,10 @@ Now we can join some stuff together, combining data on mean species-level charac
 
 
 ```{r, eval=FALSE, echo=TRUE}
+
 # maintains the structure of df (the "left" data structure)
 left_join(df, info, by='species')
+
 # maintains the structure of info (the "right" data structure)
 right_join(df,info, by='species')
 

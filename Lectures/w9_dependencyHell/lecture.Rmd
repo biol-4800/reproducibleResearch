@@ -158,7 +158,7 @@ A clear way to stay out of dependency hell is to simply use fewer dependencies. 
 
 ### Be explicit about packages and versions
 
-Packages are versioned quite effectively using semantic versioning. This is an approach which provides information package history and version, and comes in the form of "majorVersion.minorVersion.patch". At the time of writing these notes, the `R` package devtools was at version 2.3.0. Semantic versioning is good practice, and essentially tags package versions that can then be targetted for specific installation. How does this help with reproducibility? We can specify the `R` package versions that we would like to install, essentially making sure that no changes to the packages could break functionality. Where this fails is when the installation of a previous version of a package fails to install the correct version of the dependencies, breaking core functionality despite being the correct package version. 
+Packages are versioned quite effectively using semantic versioning. This is an approach which provides information package history and version, and comes in the form of "majorVersion.minorVersion.patch". At the time of writing these notes, the `R` package devtools was at version 2.3.0. Semantic versioning is good practice, and essentially tags package versions that can then be targeted for specific installation. How does this help with reproducibility? We can specify the `R` package versions that we would like to install, essentially making sure that no changes to the packages could break functionality. Where this fails is when the installation of a previous version of a package fails to install the correct version of the dependencies, breaking core functionality despite being the correct package version. 
 
 
 ```{r, eval=FALSE}
@@ -221,8 +221,9 @@ Docker images are a slightly more simple approach to virtualization, in that the
 
 **Docker**
 
-First things, first. Install `Docker` on your machine.
+https://docker-curriculum.com/
 
+First things, first. Install `Docker` on your machine.
 
 Docker has some associated language around it which can be confusing. A DockerFile is a text file which contains the instructions on how to build the subsequent DockerImage. These images can be stored on places like Docker Hub (https://hub.docker.com/). This is like Github but only for Docker Images. These DockerImages can be run as DockerContainers, which are the realizations of all the setup, allowing you access to different operating environments on your local machine, and ensuring that your code can be run on any machine that has Docker installed. 
 
@@ -230,7 +231,7 @@ Docker has some associated language around it which can be confusing. A DockerFi
 
 ```{bash, eval=FALSE}
 
-sudo docker pull r-base:latest
+sudo docker pull r-base:latest 
 
 ```
 
@@ -238,9 +239,11 @@ sudo docker pull r-base:latest
 
 ```{bash, eval=FALSE}
 
+sudo docker ps -a
 sudo docker images
 
 ```
+
 
 The output of this on my machine looks like this: 
 
@@ -313,7 +316,7 @@ docker container stop
 docker container rm 
 
 #remove entire image
-docker container rmi r-base
+docker container rm r-base
 
 # remove all stopped containers
 docker container prune

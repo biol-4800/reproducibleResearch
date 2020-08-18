@@ -20,15 +20,15 @@ header-includes:
 
 \setstretch{1}
 
-**Location**: 
+**Location**: online
 
-**Time**: 
+**Time**: T and TH 4:30 - 5:50
 
 **Instructor**: Dr. Tad Dallas (tadallas@lsu.edu)
 
 **Office**: A343 Life Sciences
 
-**Office hours**: T and Th from 2:30 - 4:20pm 
+**Office hours**: Th from 2:30 - 4:20pm 
 
 
 \bigskip

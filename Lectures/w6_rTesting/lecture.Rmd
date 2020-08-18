@@ -47,12 +47,14 @@ Do not include spaces (bad: `support Functions.r`).
 **objects**: there is some wiggle room here, but it is important to select a naming scheme and to stick with it. For instance, it may be evident from above that I am a fan of lowerCamelCase. This is where the start is always lower case, and subsequent words are not separated with spaces, but the first letter of each word is capitalized. Wickham and the RStudio crowd tend to be fans of using underscore (`_`) characters and all lowercase letters. 
 
 
-Do not overwrite existing `R` functionality (e.g., naming a variable `c`, `t`, `ts`, `matrix`, etc.)
-Do not use uninformative names (e.g., `var`, `df`, etc.)
+Do not overwrite existing `R` functionality (e.g., naming a variable `c`, `t`, `ts`, `matrix`, `var`, etc.)
+Do not use uninformative names (e.g., `df`, etc.)
 
 
 
 **functions**: In the context of code, objects are nouns and functions are verbs, so I like to start function names with an action verb, which I tend to try to conserve across functions. Two common verbs I use are `make` and `get` as prefixes. For instance, `getOccurrences` might pull species occurrence data from an online resource, `getModel` might create some model of the resulting data, and `getHeatmap` might plot the data and store the plot somewhere. 
+
+
 
 
 
@@ -92,6 +94,8 @@ getMean <- function(x){
 }
 
 ```
+
+
 
 
 ```{r eval=FALSE}
@@ -194,8 +198,9 @@ system.time(runif(1000000))
 ```
 
 `user time`: time charged to the CPU(s) for this expression
-`elapsed time`: time for you (includes data handling steps)
 `system time`: the difference between `elapsed time` and `user time` 
+`elapsed time`: time for you (includes data handling steps)
+
 
 
 
@@ -208,7 +213,7 @@ In a multi-step process, you can wrap separate functions in `system.time` calls 
 
 ```{r}
 
-Rprof(interval=0.0001, memory.profiling=TRUE, line.profiling=TRUE)
+Rprof(memory.profiling=TRUE, line.profiling=TRUE)
 
 a <- runif(1000)
 
@@ -221,12 +226,18 @@ for(i in 1:length(a)){
 	hilbert(i)*a[i]
 }
 
-lm(a ~ sample(a))
-
 Rprof(NULL)
+
 
 ```
 
+
+
+```{r}
+
+summaryRprof()
+
+```
 
 
 
@@ -386,7 +397,6 @@ The way the `testthat` package recommends organizing tests is to have a `tests` 
 testthat::context("your analysis")
 
 testthat::test_that("isRed function does stuff", {
-
 	testthat::expect_output(isRed('orange'), 'maybe?')
 	testthat::expect_type(isRed('clown nose'), 'character')
 	testthat::expect_equal(length(isRed('orange')), 1)

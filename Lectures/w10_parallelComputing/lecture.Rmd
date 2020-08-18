@@ -56,6 +56,7 @@ So hopefully I have convinced you that parallel processing is a useful skill and
 
 
 
+
 ### setting up your cluster
 
 Now we will make a cluster. Your local machine almost certainly has more than 1 core. Many phones have more than one core. When you hear things like "quad core CPU", this means that the processor (CPU) has 4 cores. To see how many cores you have access to on your machine, you can use the `detect.cores` function
@@ -126,7 +127,10 @@ parallel::stopCluster(cl)
 
 ```
 
+
 Above in the chunk options for this code block, I set `eval=FALSE` so that the `cl` object could still be used by processes below. 
+
+
 
 
 
@@ -136,6 +140,19 @@ Above in the chunk options for this code block, I set `eval=FALSE` so that the `
 ### Making sure our parallel code is reproducible.
 
 Parallel code is subject to worry about reproducibility just as much as non-parallel code. If we make draws from a distribution, we need to be sure to set the seed with `set.seed()`. In a parallel context, this can be in the function if we have a clear integer index to use. For instance, the code below draws a random uniform variable of length between 1 and 5. We provide the vector `c(1,2,3,4,5)` to the function, so we can use these integers to set the seed.
+
+
+
+Make the cluster (assuming we stopped the cluster above).
+
+```{r}
+
+cl <- parallel::makeCluster(2)
+cl
+
+```
+
+
 
 ```{r}
 
@@ -160,7 +177,6 @@ parms <- data.frame(index=1:5,
 	minRange=c(0,1,2,1,0),
 	maxRange=c(5,8,11,8,5))
 
-parallel::clusterExport(cl=cl, c('parms'))
 
 parallel::clusterApplyLB(cl, parms$index, 
 	function(x){
@@ -177,13 +193,43 @@ parallel::clusterApplyLB(cl, parms$index,
 
 This would error out, saying that `parms` is not found. But we can use `ls()` and see that parms is in the workspace. This is a common issue. `parms` may be the workspace, but each individual core needs access to the `parms` data.frame, so being in the global workspace does not really matter. This is also true of `R` functions in other packages, so the use of the `require()` function in your code may be necessary to make sure `R` package functionality is accessible across all cores. This is why we use the line: 
 
-```{r eval=FALSE
+```{r eval=FALSE}
 
-parallel::clusterExport(cl=cl, c('parms'))
+parallel::clusterExport(cl=cl, list('parms'))
 
 ```
 
 to make sure that the cluster has access to the data.frame `parms`. 
+
+
+
+
+
+
+
+The `dplyr` package also allows some parallelization functions of apply type functions.
+
+```{r}
+
+lst <- lapply(1:1000, function(x){runif(10000)})
+doMC::registerDoMC(4)
+
+# not parallel
+system.time(plyr::ldply(lst, .parallel=FALSE, .fun=mean))
+# parallel
+system.time(plyr::ldply(lst, .parallel=TRUE, .fun=mean))
+
+```
+
+
+
+
+
+
+
+
+
+
 
 
 

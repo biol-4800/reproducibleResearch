@@ -21,7 +21,7 @@ Two this week
 
 ## What's the point of APIs?
 
-Application programming interaces (or `API`s) are used to describe the communication of one computer to a web-based source of data in a programmatic manner. The computer (client) makes a request for data in a well-documented and consistent way, and receives data from the server. This is incredibly useful for acquiring data in a programmatic way, allowing analyses to be re-run on dynamic data, creating a living analysis. This could be critical in situations such as an ongoing pandemic, where daily case count updates might change model parameters or predictions. 
+Application programming interfaces (or `API`s) are used to describe the communication of one computer to a web-based source of data in a programmatic manner. The computer (client) makes a request for data in a well-documented and consistent way, and receives data from the server. This is incredibly useful for acquiring data in a programmatic way, allowing analyses to be re-run on dynamic data, creating a living analysis. This could be critical in situations such as an ongoing pandemic, where daily case count updates might change model parameters or predictions. 
 
 Many websites have APIs in order to allow users to make calls and develop apps on top of existing sites e.g., Facebook, Spotify, etc. all have APIs. 
 
@@ -35,7 +35,6 @@ In the context of biological data, many data repositories (figshare, data dryad,
 
 ## How do I query an API?
 
-
 APIs can be queried programmtically using a number of `R` packages. Some APIs will promote their own `R` packages that have functions specific to their data structures or API. However, at the core of these packages are a small number of low-level packages for querying APIs. 
 
 The general structure of an API call is the same relatively regardless of `R` package used. The parameters of an HTTP request are typically contained in the URL. For example, to return a map of Manchester using the Google Maps Static API we would submit the following request:
@@ -46,13 +45,11 @@ https://maps.googleapis.com/maps/api/staticmap?center=Manchester,England&zoom=13
 
 
 The request contains:
-
 + a URL to the API endpoint (https://maps.googleapis.com/maps/api/staticmap?) and;
 + a query containing the parameters of the request (center=Manchester,England&zoom=13&size=600x300&maptype=roadmap). In this case, we have specified the location, zoom level, size and type of map.
 
 
 Web service APIs use two key HTTP verbs to enable data requests: GET and POST. A GET request is submitted within the URL with each parameter separated by an ampersand (&). A POST request is submitted in the message body which is separate from the URL. The advantage of using POST over GET requests is that there are no character limits and the request is more secure because it is not stored in the browser’s cache.
-
 
 There are several types of Web service APIs (e.g. XML-RPC, JSON-RPC and SOAP) but the most popular is Representational State Transfer or REST. RESTful APIs can return output as XML, JSON, CSV and several other data formats. Each API has documentation and specifications which determine how data can be transferred. 
 
@@ -99,7 +96,7 @@ str(von)
 ```
 
 
-This data structure is basically in JSON format, which is a different file format (e.g., xml, htm, etc.). To make it something that `R` can work with, we use the `jsonlite` package, and function `fromJSON`. 
+This data structure is basically in JSON format, which is a different file format (e.g., xml, html, etc.). To make it something that `R` can work with, we use the `jsonlite` package, and function `fromJSON`. 
 
 
 
@@ -170,7 +167,7 @@ sapply(vonInfo2[[4]], function(x){
 
 ```{r}
 
-tad <- GET('https://api.github.com/users/taddallas')
+tad <- httr::GET('https://api.github.com/users/taddallas')
 tadInfo <- jsonlite::fromJSON(content(tad, "text"), simplifyVector = FALSE)
 
 ```
@@ -251,6 +248,7 @@ giraffe2 <- rgbif::occ_search(scientificName = "Giraffa camelopardalis",
 We will quickly plot these data out just to show them in geographic space. We first create a base map using the `maps` package, which is a really easy way to plot geopolitical boundaries. Then we layer on the occurrence data using the `points` function.
 
 ```{r}
+
 install.packages('maps')
 
 maps::map()
@@ -260,9 +258,7 @@ points(giraffe2$decimalLongitude, giraffe2$decimalLatitude, pch=16,
 ```
 
 
-Giraffes are in the US!!! These are almost certainly zoo records or errors. We will now shift into `R` visualization approaches, as we have some data, and the need to visualize it is present.
-
-
+Giraffes are in the US!!! These are almost certainly zoo records or errors. 
 
 
 
@@ -293,7 +289,7 @@ install.packages('dbplyr')
 ```
 
 
-When referring to "databases", we may think that there is a single type or schema, but this is definitely not the case. `R` has a way to accomodate for different database types, and that is to include a dependency for each database type (maybe not ideal). Below is a list describing the different ways `R` interfaces with different database types (taken from https://www.kaggle.com/anello/working-with-databases-in-r). 
+When referring to "databases", we may think that there is a single type or schema, but this is definitely not the case. `R` has a way to accommodate for different database types, and that is to include a dependency for each database type (maybe not ideal). Below is a list describing the different ways `R` interfaces with different database types (taken from https://www.kaggle.com/anello/working-with-databases-in-r). 
 
 + RMySQL connects to MySQL and MariaDB
 + RPostgreSQL connects to Postgres and Redshift.
@@ -326,6 +322,8 @@ download.file(url = "https://ndownloader.figshare.com/files/2292171",
 
 
 ```{r}
+install.packages('DBI')
+library(DBI)
 
 mammals <- DBI::dbConnect(RSQLite::SQLite(), "data_raw/portal_mammals.sqlite")
 dbplyr::src_dbi(mammals)
@@ -363,7 +361,6 @@ With this approach you can use any of the SQL queries we have seen in the databa
 One of the strengths of dplyr is that the same operation can be done using dplyr verbs instead of writing SQL. First, we select the table on which to do the operations by creating the surveys object, and then we use the standard dplyr syntax as if it were a data frame:
 
 ```{r}
-
 surveys <- dplyr::tbl(mammals, "surveys")
 surveys %>%
     dplyr::select(year, species_id, plot_id)
@@ -407,7 +404,7 @@ To pull the data into memory and allow us to use the data, we must use the `coll
 
 ```{r}
 
-surveys3 <- collect(surveys2)
+surveys3 <- dplyr::collect(surveys2)
 head(surveys3)
 
 ```
@@ -479,8 +476,6 @@ survPlot <- dplyr::left_join(surveys, plots, by='plot_id')
 
 
 
-
-
 ## R visualizations
 
 Visualizing data is arguably the most fun thing to do in `R`, and is important to communicate the results of analyses, the structure of data, and the sign and strength of relationships. Also, I definitely recommend routinely plotting out your data in order to visually explore outliers, potential errors, data distributions, etc. This approach can generate new ideas, sanity check the data, and provides immediate feedback to the user on data quality/issues/size/etc.
@@ -495,7 +490,7 @@ The `plot` function
 
 ```{r}
 
-plot(1:10)
+plot(y=1:10, x=1:10)
 
 ```
 
@@ -622,7 +617,9 @@ hist(runif(1000),
 
 ```{r}
 
+pdf('panelPlot.pdf')
 layout(matrix(1:4, ncol=2))
+
 hist(runif(1000), 
 	main='', border='dodgerblue', las=1,
 	xlab='Uniform distribution',
@@ -642,6 +639,7 @@ hist(rexp(1000, 1),
 	main='', border='orange', las=1,
 	xlab='Exponential distribution',
 	col=adjustcolor('orange', 0.25))
+dev.off()
 
 ```
 
@@ -660,6 +658,7 @@ hist(rexp(1000, 1),
 Modifying base plots (building from scratch). The code below uses the `type='n'` argument, which creates a graphical window, but does not plot the data. We also set `axes=FALSE`, which removes x and y axes. This creates a blank slate that we can layer additional information on.
 
 ```{r}
+
 plot(1:10, 
 	type='n', 
 	axes=FALSE)
@@ -701,7 +700,7 @@ If you want to use existing color palettes, there is no shortage of `R` packages
 
 install.packages('RColorBrewer')
 library(RColorBrewer)
-display.brewer.all(colorblindFriendly = T)
+RColorBrewer::display.brewer.all(colorblindFriendly = T)
 
 ```
 
