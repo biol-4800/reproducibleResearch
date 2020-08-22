@@ -288,9 +288,9 @@ This provides title and author information, as well as information on how to out
 
 ## Emphasis
 
-Bold and italic characters are straightforward in markdown, with italics denoted with a "_" character on either side of the italicized text (e.g., "_word_" becomes _word_). 
+Bold and italic characters are straightforward in markdown, with italics denoted with a `_` character on either side of the italicized text (e.g., `_word_` becomes _word_). 
 
-Bold text is just as simple, with two "*" characters surrounding whatever bold text you would like (e.g., "**word**" becomes **word**). 
+Bold text is just as simple, with two `*` characters surrounding whatever bold text you would like (e.g., `**word**` becomes **word**). 
 
 
 
