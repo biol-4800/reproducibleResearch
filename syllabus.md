@@ -103,7 +103,7 @@ The final project will be performed in small groups for undergraduate students (
 
 **Assignments**: 
 
-There will be 5 assignments throughout the semester. _Each assignment will be worth 50 points_. The assignments will be submitted through Github, a version control platform. **Assignments are due before class on Thursday** 
+There will be 5 assignments throughout the semester. _Each assignment will be worth 50 points_. The assignments will be submitted through Github, a version control platform. **Assignments are due by Sunday at midnight** 
 
 
 
