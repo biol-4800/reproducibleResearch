@@ -103,7 +103,7 @@ The final project will be performed in small groups for undergraduate students (
 
 **Assignments**: 
 
-There will be 5 assignments throughout the semester. _Each assignment will be worth 50 points_. The assignments will be submitted through Github, a version control platform. **Assignments are due by Sunday at midnight** 
+There will be 5 assignments throughout the semester. _Each assignment will be worth 50 points_. The assignments will be submitted through Github, a version control platform. **Assignments are due by Sunday at midnight**. Assignments are not collaborative, and I expect that each student will complete the assignment independently. 
 
 
 
@@ -152,6 +152,11 @@ All assignments are expected to be electronically submitted by the due date. I w
 
 
 
+
+
+
+
+
 ## Academic honesty
 
 Louisiana State University adopted the Commitment to Community in 1995 to set forth guidelines for student behavior both inside and outside of the classroom.  The Commitment to Community charges students to maintain high standards of academic and personal integrity.  All students are expected to read and be familiar with the LSU Code of Student Conduct and Commitment to Community, found online at www.lsu.edu/saa.  It is your responsibility as a student at LSU to know and understand the academic standards for our community. 
@@ -193,8 +198,11 @@ More information on registering a disability is available at [LSU Disability Ser
 | 8  | R markdown and LaTeX | -- | 
 | 9  | Dependency hell and containerization | -- |
 | 10 | Parallel computing | --  |
-| 11 | Final project work   | --  |
-| 12 | Short presentations on final projects  | -- |
+| 11 | Working with spatial data | --  |
+| 12 | An introduction to models in R  | --  |
+| 13 | Short presentations on final projects  | -- |
+| 14 | Short presentations on final projects  | -- |
+| 15 | Short presentations on final projects  | -- |
 
 
 
