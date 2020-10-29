@@ -62,6 +62,10 @@ So hopefully I have convinced you that parallel processing is a useful skill and
 Now we will make a cluster. Your local machine almost certainly has more than 1 core. Many phones have more than one core. When you hear things like "quad core CPU", this means that the processor (CPU) has 4 cores. To see how many cores you have access to on your machine, you can use the `detect.cores` function
 
 
+```{r}
+install.packages('parallel')
+library(parallel)
+```
 
 
 ```{r}
@@ -77,10 +81,6 @@ The number this returns will depend on whatever machine the document was compile
 So now we will construct a cluster of 2 nodes. This should hypothetically cut the time our task takes in half, though this ignores the overhead of moving data around to different cores.
 
 
-```{r}
-install.packages('parallel')
-library(parallel)
-```
 
 
 ```{r}
@@ -177,6 +177,10 @@ parms <- data.frame(index=1:5,
 	minRange=c(0,1,2,1,0),
 	maxRange=c(5,8,11,8,5))
 
+```
+
+
+```{r, eval=FALSE}
 
 parallel::clusterApplyLB(cl, parms$index, 
 	function(x){
@@ -193,11 +197,14 @@ parallel::clusterApplyLB(cl, parms$index,
 
 This would error out, saying that `parms` is not found. But we can use `ls()` and see that parms is in the workspace. This is a common issue. `parms` may be the workspace, but each individual core needs access to the `parms` data.frame, so being in the global workspace does not really matter. This is also true of `R` functions in other packages, so the use of the `require()` function in your code may be necessary to make sure `R` package functionality is accessible across all cores. This is why we use the line: 
 
-```{r eval=FALSE}
+
+
+```{r, eval=FALSE}
 
 parallel::clusterExport(cl=cl, list('parms'))
 
 ```
+
 
 to make sure that the cluster has access to the data.frame `parms`. 
 
@@ -209,6 +216,15 @@ to make sure that the cluster has access to the data.frame `parms`.
 
 The `dplyr` package also allows some parallelization functions of apply type functions.
 
+
+```{r}
+
+install.packages('doMC')
+install.packages('plyr')
+
+```
+
+
 ```{r}
 
 lst <- lapply(1:1000, function(x){runif(10000)})
@@ -216,6 +232,7 @@ doMC::registerDoMC(4)
 
 # not parallel
 system.time(plyr::ldply(lst, .parallel=FALSE, .fun=mean))
+
 # parallel
 system.time(plyr::ldply(lst, .parallel=TRUE, .fun=mean))
 

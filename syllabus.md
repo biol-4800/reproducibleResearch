@@ -87,6 +87,10 @@ The final project will be performed in small groups for undergraduate students (
 
 
 
+
+
+
+
 **Break down**:
 
 | Item | Points | Total |
@@ -108,9 +112,18 @@ There will be 5 assignments throughout the semester. _Each assignment will be wo
 
 
 
+
+
+
+
+
+
+
 **Attendance**: 
 
 Much of the material presented will not be available if you aren't in class to hear it. Given the pace of the course, and the computational and programming hurdles you will almost certainly encounter, you should come to class. If you do not, you will likely fail. Part of the class will be discussing relevant papers. If you do not participate in paper discussions, clearly demonstrating that you have read and understand the nuances of the work, this will affect your grade. Attendance and participation will be worth 75 points. 
+
+
 
 
 
@@ -211,9 +224,6 @@ Things not covered, but maybe can be covered given student interest:
 
 + creating an R package
 + code benchmarking (we cover line profiling but not benchmarking)
-+ handling spatial data 
-+ 
-
 
 
 \clearpage
@@ -256,6 +266,8 @@ Please prepare a short proposal on your final project idea by September 17. The 
 
 
 Please create your proposal in a markdown file called `proposal.md` in the root directory of the final project repo.
+
+
 
 
 
