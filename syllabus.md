@@ -130,7 +130,7 @@ Much of the material presented will not be available if you aren't in class to h
 
 **Project**: 
 
-The project will be a demonstration of your learning and allow you to use the new tools you have acquired in the course. 
+The project will be a demonstration of your learning and allow you to use the new tools you have acquired in the course. Project deadline is December 3. 
 
 The final project will be an R markdown document that reads in and analyzes a data source. I can provide data, if necessary, but would prefer if data came from the student (either from their research or on something they are passionate about). 
 
