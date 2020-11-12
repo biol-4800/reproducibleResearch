@@ -16,8 +16,8 @@ output: pdf_document
 
 
 
-## What are models?
 
+## What are models?
 
 Models are representations of a system of interest, used for the purposes of inference or prediction. To say 'model' in ecology is a bit too broad to be useful, and the odd delineation between "modelers" and field researchers is a bit ridiculous. To start, we can delineate between statistical models and theoretical or phenomenological models. Statistical models (e.g., ANOVA, generalized linear models) are what we will cover here, and attempt to gain inference or prediction about some response $y$ given some number of inputs $x_1...x_n$. Phenomenological models are those that are constructed independent of theory but are an attempt to construct a system which can explain some ecological process, often in a dynamic way (think of the SIR model in epidemiology). Theoretical models are those that directly arise from first principles independent of empirical data. The main distinction here is between statistical models and "other" models, as both are neat, but we'll focus on simple statistical models here.
 
@@ -123,6 +123,8 @@ The model would quickly become uninformative. That is, the model could fit every
 
 
 
+
+
 ### Breaking the assumptions of the linear model
 
 Linear models have the standard assumptions of independent and identically distributed (i.i.d.) normal random variables.
@@ -215,20 +217,26 @@ So we've gone over modeling largely in terms of linear models of some arbitrary 
 
 y <- runif(100)
 x1 <- y ** runif(100, 1,4)
-x2 <- x1 ** runif(100, 0.9,1.1)
+x2 <- x1 ** runif(100, 0.5,1.5)
 dat <- data.frame(y,x1,x2)
 
 m6 <- lm(y~x1+x2, data=dat)
 m7 <- lm(y~x1*x2, data=dat)
 
-
 plot(y=y,x=x1, pch=16, 
 	ylab='y', xlab='x', 
 	col=viridis::viridis(100)[as.numeric(cut(x2,100))], las=1)
-abline(m6, lwd=2)
-abline(m7, lwd=2, col='red')
+
+summary(m6)
+summary(m7)
+
 
 ```
+
+
+
+
+
 
 What if we don't necessary know the direct interaction, but still have some idea that a combination of variables is likely associated with some response $y$? We can do what is called feature creation (feature is just another word people use to mean variable, most often applied to creating informative predictors). For instance, if we were trying to predict the time until a bottled beer were to go skunky, we could include a measure of bottle opacity (controls the amount of light that can get in and affect the beer), and aspects of bottle dimensions (height, width). What may be important is some combination of these variables, perhaps starting to get at volumn differences or surface area to volume ratio which may influence light attenuation. So we can create a variable that represents total beer volume. 
 
@@ -236,6 +244,76 @@ What if we don't necessary know the direct interaction, but still have some idea
 
 
 Another example that is often used is to take many many predictors which may be highly collinear and to engineer features from this set. This is often done through what is referred to as 'feature reduction', a form of feature creation that attempts to make a small set of often-independent predictor variables from a large set of collinear variables. Think of climate data, where we have temperature on each day of the year as a set of 364 predictor variables explaining ice cream sales (our response). This model would likely not fit so well with so many predictors. But we could compress the information using feature reduction approaches like principal component analysis (PCA) or just some ad hoc idea about temperature (monthly mean temperature is the most important, reducing our feature set to 12 variables). 
+
+
+
+
+
+
+In the previous example, we had two continuous predictors ($x1$ and $x2$), but variables can also be categorical or factor variables. 
+
+```{r}
+
+y.1 <- runif(1000)
+x.1 <- y * runif(1000, 0.6,1.4) + runif(1000)
+x.2 <- c('a', 'b')[1+rbinom(length(x.1), 1, prob=x.1/max(x.1))]
+dat2 <- data.frame(y.1,x.1,x.2)
+
+m8 <- lm(y.1~x.1+x.2, data=dat2)
+
+plot(y=y.1, x=x.1, pch=16, 
+	ylab='y', xlab='x', 
+	col=c(1, 'dodgerblue')[as.factor(x.2)], 
+	las=1)
+
+summary(m8)
+
+m8_a <- lm(y.1~x.1, data=subset(dat2, dat2$x.2=='a'))
+m8_b <- lm(y.1~x.1, data=subset(dat2, dat2$x.2=='b'))
+abline(m8_a, lwd=2, col=1)
+abline(m8_b, lwd=2, col='dodgerblue')
+
+```
+
+
+
+
+
+### Simpson's paradox 
+
+Here, we run into a cautionary tale of variable inclusion and when model builing takes a bit more knowledge of a system. In this simple example, borrowing most of the code from this user (https://commons.wikimedia.org/wiki/File:Simpson%27s_paradox_continuous.svg), we see that not including a categorical variable can result in a complete misinterpretation of the overall pattern. That is, both categorical groups have a positive relationship between $y$ and $x$, but ignoring the categorical variable results in an overall negative relationship between $y$ and $x$. This is referred to as "Simpson's paradox", and there are plenty of ecological systems where this is definitely a thing. 
+
+
+```{r}
+
+xs1 <- c(1,2,3,4)
+ys1 <- xs1 + runif(4, 3, 5)
+
+xs2 <- xs1 + runif(4, 5, 7)
+ys2 <- xs2 - runif(4, 5, 7)
+
+xs <- c(xs1,xs2)
+ys <- c(ys1,ys2)
+
+plot(xs,ys, cex=2, pch=16, las=1,
+     col=rep(c(1, 'dodgerblue'), each=4), 
+     bg=rep(c("lightblue", "pink"), each=4),
+     xlim=range(xs)+c(-2,2), ylim=range(ys)+c(-2,2))
+abline(lm(ys1 ~ xs1), col=1, lwd=2)
+abline(lm(ys2 ~ xs2), col='dodgerblue', lwd=2)
+abline(lm(ys  ~ xs), lwd=2, lty=2)
+
+
+```  
+
+
+
+
+
+
+
+
+
 
 
 
@@ -257,6 +335,8 @@ summary(m6)
 ```
 
 But R-squared only tells us so much. What we may want to look at is how the model is truly fitting. That is, are there areas of the predictor data that do not capture the variation in `y` equally? This situation would lead to a distribution of residual variation (model residuals are the differences between model-predicted values or fitted values from the true values). To explore that, we can use the base `plot` command on the model object to explore some of these things
+
+
 
 
 ```{r}
@@ -312,11 +392,11 @@ The measures of model performance discussed above are based on how well the pred
 newData <- data.frame(x1=x1[1:10], x2=x2[1:10])
 
 predict(m6, newData, interval='confidence')
-preds <- as.data.frame(predict(m6, interval='confidence'))
+preds <- as.data.frame(predict(m6, newData, interval='confidence'))
 
 plot(y=y, x=x1, col=1, pch=16)
-points(y=preds$fit, x=x1, pch=16, col='red')
-segments(y0=preds$lwr, y1=preds$upr, x0=x1, col='red')
+points(y=preds$fit, x=x1[1:10], pch=16, col='red')
+segments(y0=preds$lwr, y1=preds$upr, x0=x1[1:10], col='red')
 
 
 ```
