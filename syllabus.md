@@ -70,7 +70,12 @@ Over the course, it is expected that students gain
 
 **Syllabus Subject to Change**:
 
-Changes to the syllabus may be made during the semester. The most up-to-date and current syllabus will always be available on the course website (on Github). Syllabus and grades will be available on Moodle (as standard). 
+Changes to the syllabus may be made during the semester. The most up-to-date and current syllabus will always be available on the course website (on Github). 
+
+
+
+
+
 
 
 
@@ -149,7 +154,7 @@ _The project is worth 125 points_
 
 **Final exam**:
 
-The final exam will go over high-level concepts learned in the class, and be worth 50 points.
+The final exam will be worth 50 points, consisting of a mixture of coding and high-level conceptual questions.
 
 
 
@@ -177,6 +182,11 @@ Louisiana State University adopted the Commitment to Community in 1995 to set fo
 Students who are suspected of violating the Code of Conduct will be referred to the office of Student Advocacy & Accountability.  For undergraduate students, a first academic violation could result in a zero grade on the assignment or failing the class and disciplinary probation until graduation.  For a second academic violation, the result could be suspension from LSU.  For graduate students, suspension is the appropriate outcome for the first offense.
 
 Further information is provided on the [LSU website](https://www.lsu.edu/online/faculty/academicintegrity.php)
+
+
+
+
+
 
 
 
@@ -239,7 +249,7 @@ Things not covered, but maybe can be covered given student interest:
 # Final project
 
 
-The final project will consist of 3 parts. First, you will develop a project proposal. Second, you will do the proposed project, and the final product will be a versioned and end-to-end reproducible analytical workflow that could potentially lead to a peer-reviewed publication. Lastly, you will briefly present your work to the class. 
+The final project will consist of 3 parts. First, you will develop a project proposal. Second, you will do the proposed project, and the final product will be a versioned and end-to-end reproducible analytical workflow that could potentially lead to a peer-reviewed publication. Lastly, you will briefly present your work to the class (15 minute scientific presentation). 
 
 
 This means that I will expect not only a well-written and clear manuscript, but also documentation to easily reproduce all analyses, figures, and compile manuscript text. Some things I would like to see incorporated into the final projects:
@@ -322,7 +332,7 @@ Please create your proposal in a markdown file called `proposal.md` in the root 
 - 50 pts Project Substance: Objectives, Code, Visualization.
   - 10pt: project is correct scope, addresses the question, and has tangible output. 
   - 10pt: Visualizations and tables compliment the overall findings. 
-  - 10pt: References are included. 
+  - 10pt: References are included and appropriate.
   - 10pt: The final document is in a format that can be reproduced and is versionable. 
   - 10pt: Code is clear, well-documented, and reproducible
 
