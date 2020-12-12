@@ -1,0 +1,221 @@
+---
+title: "Final Exam"
+author: "Your Name"
+date: 
+output: pdf_document
+---
+
+
+
+
+
+### What does it mean to do reproducible research? Why is reproducibility important to the process of science? (5 pts)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###  Using the data on red wine quality, develop a predictive model of red wine quality. Format the model in a way that it works well with the `predict` function in `R`. You will be assessed on the model structure mostly, but 5 of the 10 points will be on if the model can outperform a naive baseline (10 pts)
+
+
+
+```{r}
+
+dat <- read.csv('redWineTrain.csv')
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Pull data from an API of your choice (not Open Library), manipulate it in any way you choose, and create the most interesting and clear figure you can. (15 pts)
+
+(See https://rapidapi.com/blog/most-popular-api/ for a list of APIs)
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+### Use the R package `rgbif` to obtain occurrence data for a species of your choosing. Calculate the spatial distance between all occurrence points in a pair-wise fashion. (10 pts)
+
+
+
+```{r}
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Write an R function that removes each value of a vector, calculates the mean of the modified vector, and then reports the overall mean and standard deviation of those vector means. (5 pts)
+
+
+```{r}
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Choose a software license that is one you would feel comfortable using and defend it's use over other licenses (5 pts)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Which of the following softwares are you likely to use in the future? (0 pts)
+
++ R
++ git
++ R markdown
++ LaTeX
++ SQL
++ parallel computing packages
++ Docker
++ the tidyverse
++ a Linux OS
++ bash shell
+
+
+
+
+
+
+
+### What did you enjoy most about the course?
+
+
+
+
+
+
+
+
+
+
+
+
+### What could be improved for future iterations (especially as it will be geared more exclusively towards undergraduates in the future)?
+
+
+
+
+
+
+
+
+
+
+
